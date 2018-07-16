@@ -1,0 +1,28 @@
+apply plugin: "java"
+apply plugin: "eclipse"
+
+archivesBaseName = "Kireyis"
+version = "0.0.1"
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/']
+        }
+    }
+}
+
+jar {
+	into "resources", {
+		from "src/resources"
+	}
+	manifest {
+		attributes(
+			"Implementation-Title": "Kireyis",
+			"Implementation-Version": version,
+			"Main-Class": "kireyis.client.Main"
+		)
+	}
+}

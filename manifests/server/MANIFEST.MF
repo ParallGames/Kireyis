@@ -1,0 +1,2 @@
+Implementation-Title: Kireyis
+Main-Class: kireyis.server.Main
