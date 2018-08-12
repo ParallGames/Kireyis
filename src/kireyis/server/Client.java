@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import kireyis.common.Consts;
 import kireyis.common.DataID;
+import kireyis.common.Entity;
 import kireyis.common.EntityID;
 
 public class Client {
@@ -15,7 +16,7 @@ public class Client {
 	private double y = 5;
 
 	private int viewDistance;
-	
+
 	private final Socket socket;
 	private DataInputStream in;
 	private DataOutputStream out;
@@ -50,6 +51,15 @@ public class Client {
 			} else {
 				out.writeBoolean(true);
 			}
+
+			for (int y = 0; y < Consts.WORLD_SIZE; y++) {
+				for (int x = 0; x < Consts.WORLD_SIZE; x++) {
+					out.writeByte(World.get(x, y));
+				}
+			}
+			out.writeDouble(x);
+			out.writeDouble(y);
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
@@ -64,19 +74,19 @@ public class Client {
 						if (dataID == DataID.PLAYER_MOVE) {
 							x += in.readDouble();
 							y += in.readDouble();
-							
-							if(x < 0) {
-								x += Consts.WORLD_SIZE;
-							} else if(x >= Consts.WORLD_SIZE) {
-								x -= Consts.WORLD_SIZE;
+
+							if (x < 0) {
+								x = 0;
+							} else if (x >= Consts.WORLD_SIZE) {
+								x = Consts.WORLD_SIZE;
 							}
-							
-							if(y < 0) {
-								y += Consts.WORLD_SIZE;
-							} else if(y >= Consts.WORLD_SIZE) {
-								y -= Consts.WORLD_SIZE;
+
+							if (y < 0) {
+								y = 0;
+							} else if (y >= Consts.WORLD_SIZE) {
+								y = Consts.WORLD_SIZE;
 							}
-						} if (dataID == DataID.VIEW_DISTANCE) {
+						} else if (dataID == DataID.VIEW_DISTANCE) {
 							viewDistance = in.readInt();
 						}
 					} catch (IOException e) {
@@ -110,7 +120,7 @@ public class Client {
 		return connected;
 	}
 
-	public void sendCloseEvent() {
+	public synchronized void sendCloseEvent() {
 		try {
 			out.writeByte(DataID.CLOSE);
 		} catch (IOException e) {
@@ -118,7 +128,7 @@ public class Client {
 		}
 	}
 
-	public void sendConnexion(String username) {
+	public synchronized void sendConnexion(String username) {
 		try {
 			out.writeByte(DataID.CLIENT_CONNEXION);
 			out.writeUTF(username);
@@ -127,7 +137,7 @@ public class Client {
 		}
 	}
 
-	public void sendDisconnexion(String username) {
+	public synchronized void sendDisconnexion(String username) {
 		try {
 			out.writeByte(DataID.CLIENT_DISCONNEXION);
 			out.writeUTF(username);
@@ -136,7 +146,22 @@ public class Client {
 		}
 	}
 
-	public void sendPos() {
+	public synchronized void sendEntities(ArrayList<Entity> entities) {
+		try {
+			out.writeByte(DataID.ENTITIES);
+			out.writeInt(entities.size());
+
+			for (int n = 0; n < entities.size(); n++) {
+				out.writeByte(entities.get(n).getID());
+				out.writeDouble(entities.get(n).getX());
+				out.writeDouble(entities.get(n).getY());
+			}
+		} catch (IOException e) {
+			close();
+		}
+	}
+
+	public synchronized void sendPos() {
 		try {
 			out.writeByte(DataID.PLAYER_POS);
 			out.writeDouble(x);
@@ -145,8 +170,8 @@ public class Client {
 			close();
 		}
 	}
-	
+
 	public Entity getEntity() {
-		return new Entity(x, y, EntityID.PLAYER);
+		return new Entity(EntityID.PLAYER, x, y);
 	}
 }

@@ -1,11 +1,12 @@
-package kireyis.server;
+package kireyis.common;
 
 public class Entity {
-	protected double x;
-	protected double y;
-	protected byte id;
-	
-	public Entity(double x, double y, byte id) {
+	private double x;
+	private double y;
+
+	private byte id;
+
+	public Entity(byte id, double x, double y) {
 		this.x = x;
 		this.y = y;
 		this.id = id;

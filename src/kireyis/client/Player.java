@@ -3,8 +3,8 @@ package kireyis.client;
 import kireyis.common.Consts;
 
 public class Player {
-	private static double x = Consts.WORLD_SIZE / 2d;
-	private static double y = Consts.WORLD_SIZE / 2d;
+	private static double x;
+	private static double y;
 
 	private static int viewDistance = 5;
 
@@ -34,18 +34,18 @@ public class Player {
 	public static void increaseViewDistance() {
 		viewDistance++;
 
-		if (viewDistance > 50) {
-			viewDistance = 50;
+		if (viewDistance > Consts.MAX_VIEW) {
+			viewDistance = Consts.MAX_VIEW;
 		}
 	}
 
 	public static void reduceViewDistance() {
 		viewDistance--;
-		if (viewDistance < 3) {
-			viewDistance = 3;
+		if (viewDistance < Consts.MIN_VIEW) {
+			viewDistance = Consts.MIN_VIEW;
 		}
 	}
-	
+
 	public static void setPos(double x, double y) {
 		Player.x = x;
 		Player.y = y;

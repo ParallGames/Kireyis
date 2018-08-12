@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 
 import kireyis.common.Consts;
 import kireyis.common.DataID;
+import kireyis.common.Entity;
 
 public class Client {
 	private static Socket socket;
@@ -25,6 +26,7 @@ public class Client {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		GameLoop.stop();
 	}
 
 	public static boolean connect(String ip, String pseudo) {
@@ -40,6 +42,16 @@ public class Client {
 			if (!in.readBoolean()) {
 				return false;
 			}
+
+			for (int y = 0; y < Consts.WORLD_SIZE; y++) {
+				for (int x = 0; x < Consts.WORLD_SIZE; x++) {
+					World.set(x, y, in.readByte());
+				}
+			}
+
+			Player.setPos(in.readDouble(), in.readDouble());
+
+			System.out.println("World recieved");
 		} catch (UnknownHostException e) {
 			// e.printStackTrace();
 
@@ -58,39 +70,27 @@ public class Client {
 				while (true) {
 					try {
 						byte dataID = in.readByte();
-						
+
 						if (dataID == DataID.INFO) {
 							String info = in.readUTF();
+							System.out.println(info);
 						} else if (dataID == DataID.CLOSE) {
 							System.err.println("Server Closed");
 							close();
-
 							return;
 						} else if (dataID == DataID.CLIENT_CONNEXION) {
 							String name = in.readUTF();
+							System.out.println(name + " connected");
 						} else if (dataID == DataID.CLIENT_DISCONNEXION) {
 							String name = in.readUTF();
+							System.out.println(name + " disconnected");
 						} else if (dataID == DataID.WORLD) {
-							int size = in.readInt();
-							int x = in.readInt();
-							int y = in.readInt();
-							
-							byte world[] = new byte[size * size];
-							
-							for(int n = 0; n < world.length; n++) {
-								world[n] = in.readByte();
-							}
-							
-							for(int a = 0; a < size; a++) {
-								for(int b = 0; b < size; b++) {
-									World.set(x + a, y + b, world[a + b * size]);
-								}
-							}
+
 						} else if (dataID == DataID.ENTITIES) {
 							World.getEntities().clear();
 							int num = in.readInt();
-							
-							for(int n = 0; n < num; n++) {
+
+							for (int n = 0; n < num; n++) {
 								byte id = in.readByte();
 								double x = in.readDouble();
 								double y = in.readDouble();
@@ -114,8 +114,8 @@ public class Client {
 	public static String getPseudo() {
 		return pseudo;
 	}
-	
-	public static void sendMove(double moveX, double moveY) {
+
+	public static synchronized void sendMove(double moveX, double moveY) {
 		try {
 			out.writeByte(DataID.PLAYER_MOVE);
 			out.writeDouble(moveX);
@@ -126,7 +126,7 @@ public class Client {
 		}
 	}
 
-	public static void sendViewDistance() {
+	public static synchronized void sendViewDistance() {
 		try {
 			out.writeByte(DataID.VIEW_DISTANCE);
 			out.writeDouble(Player.getViewDistance());

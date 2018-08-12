@@ -13,13 +13,13 @@ public class Window extends Application {
 	private static final ConnectionPanel connectionPanel = new ConnectionPanel();
 	private static final GamePanel gamePanel = new GamePanel();
 	private static final PopupPanel popupPanel = new PopupPanel();
-	
+
 	private static final Key key = new Key();
 
 	@Override
 	public void start(Stage primaryStage) {
 		scene.setFill(Color.rgb(191, 191, 191));
-		
+
 		gamePanel.setVisible(false);
 		popupPanel.setVisible(false);
 
@@ -31,8 +31,8 @@ public class Window extends Application {
 		primaryStage.setResizable(true);
 		primaryStage.setTitle("Kireyis");
 		primaryStage.show();
-		
-		//GameLoop.start();
+
+		// GameLoop.start();
 	}
 
 	public static int getHeight() {
@@ -46,22 +46,22 @@ public class Window extends Application {
 	public static void popupPanel() {
 		popupPanel.setVisible(!popupPanel.isVisible());
 	}
-	
+
 	public static void showGame(boolean show) {
 		gamePanel.setVisible(show);
 	}
-	
+
 	public static void showConnection(boolean show) {
-		if(show) {
+		if (show) {
 			popupPanel.setVisible(false);
 		}
 		connectionPanel.setVisible(show);
 	}
-	
+
 	public static void update() {
 		gamePanel.update();
 	}
-	
+
 	public static void keyFocus() {
 		key.requestFocus();
 	}

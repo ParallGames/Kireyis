@@ -7,7 +7,7 @@ public class Main {
 	public static void main(String[] args) {
 		Application.launch(Window.class);
 		GameLoop.stop();
-		
+
 		Client.close();
 	}
 }

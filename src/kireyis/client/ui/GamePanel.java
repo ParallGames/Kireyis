@@ -7,9 +7,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
+import kireyis.client.Client;
 import kireyis.client.Player;
 import kireyis.client.World;
 import kireyis.common.BlockID;
+import kireyis.common.Entity;
+import kireyis.common.EntityID;
 
 public class GamePanel extends Group {
 	private final GraphicsContext gc;
@@ -28,6 +31,7 @@ public class GamePanel extends Group {
 				} else {
 					Player.increaseViewDistance();
 				}
+				Client.sendViewDistance();
 			}
 		});
 	}
@@ -35,9 +39,9 @@ public class GamePanel extends Group {
 	public void update() {
 		final double camX = Player.getX();
 		final double camY = Player.getY();
-		
-		final double playerX = Player.getX();
-		final double playerY = Player.getY();
+
+		// final double playerX = Player.getX();
+		// final double playerY = Player.getY();
 
 		final int minX = ((int) camX) - Player.getViewDistance();
 		final int minY = ((int) camY) - Player.getViewDistance();
@@ -45,8 +49,10 @@ public class GamePanel extends Group {
 		final int viewSize = Player.getViewDistance() * 2 + 1;
 		final double blockSize = (Math.max(Window.getWidth(), Window.getHeight()) / (Player.getViewDistance() * 2d));
 
-		final double translateX = -blockSize * (camX - (int) camX) - ((viewSize - 1) * blockSize - Window.getWidth()) / 2;
-		final double translateY = -blockSize * (camY - (int) camY) - ((viewSize - 1) * blockSize - Window.getHeight()) / 2;
+		final double translateX = -blockSize * (camX - (int) camX)
+				- ((viewSize - 1) * blockSize - Window.getWidth()) / 2;
+		final double translateY = -blockSize * (camY - (int) camY)
+				- ((viewSize - 1) * blockSize - Window.getHeight()) / 2;
 
 		Platform.runLater(new Runnable() {
 			public void run() {
@@ -70,14 +76,19 @@ public class GamePanel extends Group {
 					}
 				}
 
-				gc.setFill(Color.PURPLE);
+				for (Entity entity : World.getEntities()) {
+					double x = (entity.getX() - camX) * blockSize + Window.getWidth() / 2
+							- Player.getWidth() / 2 * blockSize;
+					double y = (entity.getY() - camY) * blockSize + Window.getHeight() / 2
+							- Player.getHeight() / 2 * blockSize;
 
-				double x = (playerX - camX) * blockSize + Window.getWidth() / 2
-						- Player.getWidth() / 2 * blockSize;
-				double y = (playerY - camY) * blockSize + Window.getHeight() / 2
-						- Player.getHeight() / 2 * blockSize;
+					if (entity.getID() == EntityID.PLAYER) {
+						gc.setFill(Color.PURPLE);
+					}
 
-				gc.fillOval(x, y, Player.getWidth() * blockSize, Player.getHeight() * blockSize);
+					gc.fillOval(x, y, Player.getWidth() * blockSize, Player.getHeight() * blockSize);
+				}
+
 			}
 		});
 	}

@@ -6,20 +6,20 @@ import java.net.SocketException;
 import java.util.Vector;
 
 import kireyis.common.Consts;
+import kireyis.common.Entity;
 
 public class Server {
 	public static final Vector<Client> clients = new Vector<Client>();
 
 	private static ServerSocket socket = null;
-	
+
 	public static Vector<Entity> getPlayerEntities() {
 		Vector<Entity> players = new Vector<Entity>();
-		
-		for(Client c : clients) {
+
+		for (Client c : clients) {
 			players.add(c.getEntity());
 		}
-			
-		
+
 		return players;
 	}
 
@@ -65,6 +65,7 @@ public class Server {
 						Client client = clients.get(n);
 						if (client.isConnected()) {
 							client.sendPos();
+							client.sendEntities(World.getEntities());
 						} else {
 							System.out.println(client.getPseudo() + " disconnected");
 							clients.remove(client);

@@ -2,9 +2,9 @@ package kireyis.server;
 
 import java.util.ArrayList;
 
-import kireyis.client.Entity;
 import kireyis.common.BlockID;
 import kireyis.common.Consts;
+import kireyis.common.Entity;
 
 public class World {
 	private static final ArrayList<Entity> entities = new ArrayList<Entity>();
@@ -17,7 +17,17 @@ public class World {
 				world[x][y] = BlockID.GRASS;
 			}
 		}
-		
-		world[0][0] = BlockID.VOID;
+	}
+
+	public static byte get(int x, int y) {
+		return world[x][y];
+	}
+
+	public static ArrayList<Entity> getEntities() {
+		ArrayList<Entity> list = new ArrayList<Entity>();
+		list.addAll(entities);
+		list.addAll(Server.getPlayerEntities());
+
+		return list;
 	}
 }
