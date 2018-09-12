@@ -64,8 +64,8 @@ public class Server {
 					for (int n = clients.size() - 1; n >= 0; n--) {
 						Client client = clients.get(n);
 						if (client.isConnected()) {
-							client.sendPos();
 							client.sendEntities(World.getEntities());
+							client.sendPos();
 						} else {
 							System.out.println(client.getPseudo() + " disconnected");
 							clients.remove(client);

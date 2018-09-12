@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import kireyis.common.Consts;
 import kireyis.common.DataID;
@@ -87,15 +88,17 @@ public class Client {
 						} else if (dataID == DataID.WORLD) {
 
 						} else if (dataID == DataID.ENTITIES) {
-							World.getEntities().clear();
+							ArrayList<Entity> entities = new ArrayList<Entity>();
+
 							int num = in.readInt();
 
 							for (int n = 0; n < num; n++) {
 								byte id = in.readByte();
 								double x = in.readDouble();
 								double y = in.readDouble();
-								World.getEntities().add(new Entity(id, x, y));
+								entities.add(new Entity(id, x, y));
 							}
+							World.setEntities(entities);
 						} else if (dataID == DataID.PLAYER_POS) {
 							Player.setPos(in.readDouble(), in.readDouble());
 						}
@@ -129,7 +132,7 @@ public class Client {
 	public static synchronized void sendViewDistance() {
 		try {
 			out.writeByte(DataID.VIEW_DISTANCE);
-			out.writeDouble(Player.getViewDistance());
+			out.writeInt(Player.getViewDistance());
 		} catch (IOException e) {
 			System.err.println("Disconnected");
 			close();

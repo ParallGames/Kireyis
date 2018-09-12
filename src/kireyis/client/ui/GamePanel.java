@@ -1,5 +1,7 @@
 package kireyis.client.ui;
 
+import java.util.ArrayList;
+
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -40,8 +42,7 @@ public class GamePanel extends Group {
 		final double camX = Player.getX();
 		final double camY = Player.getY();
 
-		// final double playerX = Player.getX();
-		// final double playerY = Player.getY();
+		final ArrayList<Entity> entities = World.getEntities();
 
 		final int minX = ((int) camX) - Player.getViewDistance();
 		final int minY = ((int) camY) - Player.getViewDistance();
@@ -76,7 +77,7 @@ public class GamePanel extends Group {
 					}
 				}
 
-				for (Entity entity : World.getEntities()) {
+				for (Entity entity : entities) {
 					double x = (entity.getX() - camX) * blockSize + Window.getWidth() / 2
 							- Player.getWidth() / 2 * blockSize;
 					double y = (entity.getY() - camY) * blockSize + Window.getHeight() / 2

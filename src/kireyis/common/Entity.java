@@ -23,4 +23,8 @@ public class Entity {
 	public byte getID() {
 		return id;
 	}
+
+	public Entity clone() {
+		return new Entity(id, x, y);
+	}
 }

@@ -32,7 +32,18 @@ public class World {
 		world[x][y] = id;
 	}
 
-	public static ArrayList<Entity> getEntities() {
-		return entities;
+	public static synchronized ArrayList<Entity> getEntities() {
+		ArrayList<Entity> returnedEntities = new ArrayList<Entity>();
+
+		for (Entity entity : entities) {
+			returnedEntities.add(entity);
+		}
+
+		return returnedEntities;
+	}
+
+	public static synchronized void setEntities(ArrayList<Entity> newEntities) {
+		entities.clear();
+		entities.addAll(newEntities);
 	}
 }

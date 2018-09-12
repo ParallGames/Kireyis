@@ -11,11 +11,11 @@ import kireyis.common.DataID;
 import kireyis.common.Entity;
 import kireyis.common.EntityID;
 
-public class Client {
+public final class Client {
 	private double x = 5;
 	private double y = 5;
 
-	private int viewDistance;
+	private int viewDistance = 5;
 
 	private final Socket socket;
 	private DataInputStream in;
@@ -72,8 +72,11 @@ public class Client {
 					try {
 						byte dataID = in.readByte();
 						if (dataID == DataID.PLAYER_MOVE) {
-							x += in.readDouble();
-							y += in.readDouble();
+							double moveX = in.readDouble();
+							double moveY = in.readDouble();
+
+							x += moveX;
+							y += moveY;
 
 							if (x < 0) {
 								x = 0;
@@ -147,14 +150,23 @@ public class Client {
 	}
 
 	public synchronized void sendEntities(ArrayList<Entity> entities) {
+		ArrayList<Entity> sended = new ArrayList<Entity>();
+
+		for (Entity entity : entities) {
+			if (entity.getX() < x + viewDistance && entity.getX() > x - viewDistance && entity.getY() < y + viewDistance
+					&& entity.getY() > y - viewDistance) {
+				sended.add(entity);
+			}
+		}
+
 		try {
 			out.writeByte(DataID.ENTITIES);
-			out.writeInt(entities.size());
+			out.writeInt(sended.size());
 
-			for (int n = 0; n < entities.size(); n++) {
-				out.writeByte(entities.get(n).getID());
-				out.writeDouble(entities.get(n).getX());
-				out.writeDouble(entities.get(n).getY());
+			for (Entity entity : sended) {
+				out.writeByte(entity.getID());
+				out.writeDouble(entity.getX());
+				out.writeDouble(entity.getY());
 			}
 		} catch (IOException e) {
 			close();
