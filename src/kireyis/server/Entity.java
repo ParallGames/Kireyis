@@ -1,14 +1,16 @@
-package kireyis.common;
+package kireyis.server;
 
 public class Entity {
 	private double x;
 	private double y;
 
-	private byte id;
+	private byte typeid;
+	private int id;
 
-	public Entity(byte id, double x, double y) {
+	public Entity(byte typeid, double x, double y, int id) {
 		this.x = x;
 		this.y = y;
+		this.typeid = typeid;
 		this.id = id;
 	}
 
@@ -20,11 +22,11 @@ public class Entity {
 		return y;
 	}
 
-	public byte getID() {
+	public int getID() {
 		return id;
 	}
 
-	public Entity clone() {
-		return new Entity(id, x, y);
+	public int getTypeid() {
+		return typeid;
 	}
 }

@@ -8,10 +8,11 @@ import java.util.ArrayList;
 
 import kireyis.common.Consts;
 import kireyis.common.DataID;
-import kireyis.common.Entity;
 import kireyis.common.EntityID;
 
 public final class Client {
+	private final int id;
+
 	private double x = 5;
 	private double y = 5;
 
@@ -62,7 +63,8 @@ public final class Client {
 
 		} catch (IOException e) {
 			e.printStackTrace();
-			return;
+		} finally {
+			id = pseudo.hashCode();
 		}
 
 		new Thread() {
@@ -154,7 +156,7 @@ public final class Client {
 
 		for (Entity entity : entities) {
 			if (entity.getX() < x + viewDistance && entity.getX() > x - viewDistance && entity.getY() < y + viewDistance
-					&& entity.getY() > y - viewDistance) {
+					&& entity.getY() > y - viewDistance && entity.getID() != id) {
 				sended.add(entity);
 			}
 		}
@@ -164,7 +166,7 @@ public final class Client {
 			out.writeInt(sended.size());
 
 			for (Entity entity : sended) {
-				out.writeByte(entity.getID());
+				out.writeByte(entity.getTypeid());
 				out.writeDouble(entity.getX());
 				out.writeDouble(entity.getY());
 			}
@@ -184,6 +186,6 @@ public final class Client {
 	}
 
 	public Entity getEntity() {
-		return new Entity(EntityID.PLAYER, x, y);
+		return new Entity(EntityID.PLAYER, x, y, id);
 	}
 }

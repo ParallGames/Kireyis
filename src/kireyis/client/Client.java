@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import kireyis.common.Consts;
 import kireyis.common.DataID;
-import kireyis.common.Entity;
 
 public class Client {
 	private static Socket socket;
@@ -88,7 +87,7 @@ public class Client {
 						} else if (dataID == DataID.WORLD) {
 
 						} else if (dataID == DataID.ENTITIES) {
-							ArrayList<Entity> entities = new ArrayList<Entity>();
+							ArrayList<RenderEntity> entities = new ArrayList<RenderEntity>();
 
 							int num = in.readInt();
 
@@ -96,7 +95,7 @@ public class Client {
 								byte id = in.readByte();
 								double x = in.readDouble();
 								double y = in.readDouble();
-								entities.add(new Entity(id, x, y));
+								entities.add(new RenderEntity(id, x, y));
 							}
 							World.setEntities(entities);
 						} else if (dataID == DataID.PLAYER_POS) {

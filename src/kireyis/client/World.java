@@ -4,10 +4,9 @@ import java.util.ArrayList;
 
 import kireyis.common.BlockID;
 import kireyis.common.Consts;
-import kireyis.common.Entity;
 
 public class World {
-	private static final ArrayList<Entity> entities = new ArrayList<Entity>();
+	private static final ArrayList<RenderEntity> entities = new ArrayList<RenderEntity>();
 
 	private static final byte world[][] = new byte[Consts.WORLD_SIZE][Consts.WORLD_SIZE];
 
@@ -32,17 +31,17 @@ public class World {
 		world[x][y] = id;
 	}
 
-	public static synchronized ArrayList<Entity> getEntities() {
-		ArrayList<Entity> returnedEntities = new ArrayList<Entity>();
+	public static synchronized ArrayList<RenderEntity> getEntities() {
+		ArrayList<RenderEntity> returnedEntities = new ArrayList<RenderEntity>();
 
-		for (Entity entity : entities) {
+		for (RenderEntity entity : entities) {
 			returnedEntities.add(entity);
 		}
 
 		return returnedEntities;
 	}
 
-	public static synchronized void setEntities(ArrayList<Entity> newEntities) {
+	public static synchronized void setEntities(ArrayList<RenderEntity> newEntities) {
 		entities.clear();
 		entities.addAll(newEntities);
 	}

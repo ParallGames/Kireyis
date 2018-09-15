@@ -6,7 +6,6 @@ import java.net.SocketException;
 import java.util.Vector;
 
 import kireyis.common.Consts;
-import kireyis.common.Entity;
 
 public class Server {
 	public static final Vector<Client> clients = new Vector<Client>();

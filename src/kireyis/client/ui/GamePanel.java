@@ -11,9 +11,9 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import kireyis.client.Client;
 import kireyis.client.Player;
+import kireyis.client.RenderEntity;
 import kireyis.client.World;
 import kireyis.common.BlockID;
-import kireyis.common.Entity;
 import kireyis.common.EntityID;
 
 public class GamePanel extends Group {
@@ -42,7 +42,10 @@ public class GamePanel extends Group {
 		final double camX = Player.getX();
 		final double camY = Player.getY();
 
-		final ArrayList<Entity> entities = World.getEntities();
+		final double playerX = Player.getX();
+		final double playerY = Player.getY();
+
+		final ArrayList<RenderEntity> entities = World.getEntities();
 
 		final int minX = ((int) camX) - Player.getViewDistance();
 		final int minY = ((int) camY) - Player.getViewDistance();
@@ -77,19 +80,24 @@ public class GamePanel extends Group {
 					}
 				}
 
-				for (Entity entity : entities) {
+				for (RenderEntity entity : entities) {
 					double x = (entity.getX() - camX) * blockSize + Window.getWidth() / 2
 							- Player.getWidth() / 2 * blockSize;
 					double y = (entity.getY() - camY) * blockSize + Window.getHeight() / 2
 							- Player.getHeight() / 2 * blockSize;
 
-					if (entity.getID() == EntityID.PLAYER) {
+					if (entity.getTypeid() == EntityID.PLAYER) {
 						gc.setFill(Color.PURPLE);
 					}
 
 					gc.fillOval(x, y, Player.getWidth() * blockSize, Player.getHeight() * blockSize);
 				}
 
+				double x = (playerX - camX) * blockSize + Window.getWidth() / 2 - Player.getWidth() / 2 * blockSize;
+				double y = (playerY - camY) * blockSize + Window.getHeight() / 2 - Player.getHeight() / 2 * blockSize;
+
+				gc.setFill(Color.BROWN);
+				gc.fillOval(x, y, Player.getWidth() * blockSize, Player.getHeight() * blockSize);
 			}
 		});
 	}

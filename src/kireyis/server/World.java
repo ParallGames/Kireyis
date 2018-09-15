@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import kireyis.common.BlockID;
 import kireyis.common.Consts;
-import kireyis.common.Entity;
 
 public class World {
 	private static final ArrayList<Entity> entities = new ArrayList<Entity>();
