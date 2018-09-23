@@ -23,10 +23,6 @@ public class World {
 	}
 
 	public static ArrayList<Entity> getEntities() {
-		final ArrayList<Entity> list = new ArrayList<Entity>();
-		list.addAll(entities);
-		list.addAll(Server.getPlayerEntities());
-
-		return list;
+		return entities;
 	}
 }

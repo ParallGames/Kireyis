@@ -1,18 +1,15 @@
 package kireyis.server;
 
-public class Entity {
-	private final double x;
-	private final double y;
+public abstract class Entity {
+	protected double x;
+	protected double y;
 
-	private final byte typeid;
-	private final int id;
+	protected int id;
 
-	public Entity(final byte typeid, final double x, final double y, final int id) {
-		this.x = x;
-		this.y = y;
-		this.typeid = typeid;
-		this.id = id;
-	}
+	/*
+	 * public Entity(final byte typeID, final double x, final double y, final int
+	 * id) { this.x = x; this.y = y; this.typeID = typeID; this.id = id; }
+	 */
 
 	public double getX() {
 		return x;
@@ -26,7 +23,5 @@ public class Entity {
 		return id;
 	}
 
-	public int getTypeid() {
-		return typeid;
-	}
+	public abstract int getTypeID();
 }

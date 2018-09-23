@@ -6,12 +6,12 @@ public class DataID {
 	 * String message
 	 */
 
-	public static final byte CLIENT_CONNEXION = 2;
+	public static final byte CLIENT_CONNECTION = 2;
 	/*
 	 * String clientName
 	 */
 
-	public static final byte CLIENT_DISCONNEXION = 3;
+	public static final byte CLIENT_DISCONNECTION = 3;
 	/*
 	 * String clientName
 	 */

@@ -12,16 +12,6 @@ public class Server {
 
 	private static ServerSocket socket = null;
 
-	public static Vector<Entity> getPlayerEntities() {
-		final Vector<Entity> players = new Vector<Entity>();
-
-		for (final Client c : clients) {
-			players.add(c.getEntity());
-		}
-
-		return players;
-	}
-
 	public static void start() {
 
 		try {
@@ -29,6 +19,8 @@ public class Server {
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}
+
+		// Client connection thread
 		new Thread() {
 			@Override
 			public void run() {
@@ -38,11 +30,12 @@ public class Server {
 
 						if (client.isConnected()) {
 							System.out.println(client.getPseudo() + " connected");
-							for (final Client reciever : clients) {
-								reciever.sendConnexion(client.getPseudo());
+							for (final Client receiver : clients) {
+								receiver.sendConnection(client.getPseudo());
 							}
 
 							clients.add(client);
+							World.getEntities().add(client);
 						} else {
 							client.close();
 						}
@@ -56,6 +49,7 @@ public class Server {
 			}
 		}.start();
 
+		// Game loop thread
 		new Thread() {
 			@Override
 			public void run() {
@@ -68,9 +62,10 @@ public class Server {
 						} else {
 							System.out.println(client.getPseudo() + " disconnected");
 							clients.remove(client);
+							World.getEntities().remove(client);
 
-							for (final Client reciever : clients) {
-								reciever.sendDisconnexion(client.getPseudo());
+							for (final Client receiver : clients) {
+								receiver.sendDisconnection(client.getPseudo());
 							}
 						}
 					}

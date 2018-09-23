@@ -11,12 +11,7 @@ import kireyis.common.Consts;
 import kireyis.common.DataID;
 import kireyis.common.EntityID;
 
-public final class Client {
-	private final int id;
-
-	private double x = 5;
-	private double y = 5;
-
+public final class Client extends Entity {
 	private int viewDistance = 5;
 
 	private final Socket socket;
@@ -32,6 +27,9 @@ public final class Client {
 	private final LinkedBlockingQueue<Runnable> sendRequests = new LinkedBlockingQueue<Runnable>();
 
 	public Client(final Socket socket) {
+		x = 5;
+		y = 5;
+
 		this.socket = socket;
 
 		try {
@@ -173,12 +171,12 @@ public final class Client {
 		});
 	}
 
-	public synchronized void sendConnexion(final String username) {
+	public synchronized void sendConnection(final String username) {
 		sendRequests.add(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					out.writeByte(DataID.CLIENT_CONNEXION);
+					out.writeByte(DataID.CLIENT_CONNECTION);
 					out.writeUTF(username);
 				} catch (final IOException e) {
 					close();
@@ -187,12 +185,12 @@ public final class Client {
 		});
 	}
 
-	public synchronized void sendDisconnexion(final String username) {
+	public synchronized void sendDisconnection(final String username) {
 		sendRequests.add(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					out.writeByte(DataID.CLIENT_DISCONNEXION);
+					out.writeByte(DataID.CLIENT_DISCONNECTION);
 					out.writeUTF(username);
 				} catch (final IOException e) {
 					close();
@@ -220,7 +218,7 @@ public final class Client {
 					out.writeInt(sended.size());
 
 					for (final Entity entity : sended) {
-						out.writeByte(entity.getTypeid());
+						out.writeByte(entity.getTypeID());
 						out.writeDouble(entity.getX());
 						out.writeDouble(entity.getY());
 					}
@@ -246,7 +244,8 @@ public final class Client {
 		});
 	}
 
-	public Entity getEntity() {
-		return new Entity(EntityID.PLAYER, x, y, id);
+	@Override
+	public int getTypeID() {
+		return EntityID.PLAYER;
 	}
 }

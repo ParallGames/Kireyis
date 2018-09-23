@@ -68,10 +68,10 @@ public class Client {
 							System.err.println("Server Closed");
 							close();
 							return;
-						} else if (dataID == DataID.CLIENT_CONNEXION) {
+						} else if (dataID == DataID.CLIENT_CONNECTION) {
 							final String name = in.readUTF();
 							System.out.println(name + " connected");
-						} else if (dataID == DataID.CLIENT_DISCONNEXION) {
+						} else if (dataID == DataID.CLIENT_DISCONNECTION) {
 							final String name = in.readUTF();
 							System.out.println(name + " disconnected");
 						} else if (dataID == DataID.WORLD) {
