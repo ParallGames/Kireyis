@@ -27,7 +27,8 @@ public class GamePanel extends Group {
 		gc = canvas.getGraphicsContext2D();
 
 		canvas.setOnScroll(new EventHandler<ScrollEvent>() {
-			public void handle(ScrollEvent e) {
+			@Override
+			public void handle(final ScrollEvent e) {
 				if (e.getDeltaY() > 0) {
 					Player.reduceViewDistance();
 				} else {
@@ -59,31 +60,32 @@ public class GamePanel extends Group {
 				- ((viewSize - 1) * blockSize - Window.getHeight()) / 2;
 
 		Platform.runLater(new Runnable() {
+			@Override
 			public void run() {
 				canvas.setHeight(Window.getHeight());
 				canvas.setWidth(Window.getWidth());
 
 				for (int x = 0; x < viewSize; x++) {
 					for (int y = 0; y < viewSize; y++) {
-						byte block = World.get(x + minX, y + minY);
+						final byte block = World.get(x + minX, y + minY);
 
 						if (block == BlockID.UNKNOWN) {
 							gc.setFill(Color.PURPLE);
-						}
-						if (block == BlockID.VOID) {
+						} else if (block == BlockID.VOID) {
 							gc.setFill(Color.BLACK);
-						}
-						if (block == BlockID.GRASS) {
+						} else if (block == BlockID.GRASS) {
 							gc.setFill(Color.GREEN);
+						} else {
+							gc.setFill(Color.WHITE);
 						}
 						gc.fillRect(translateX + blockSize * x, translateY + blockSize * y, blockSize, blockSize);
 					}
 				}
 
-				for (RenderEntity entity : entities) {
-					double x = (entity.getX() - camX) * blockSize + Window.getWidth() / 2
+				for (final RenderEntity entity : entities) {
+					final double x = (entity.getX() - camX) * blockSize + Window.getWidth() / 2
 							- Player.getWidth() / 2 * blockSize;
-					double y = (entity.getY() - camY) * blockSize + Window.getHeight() / 2
+					final double y = (entity.getY() - camY) * blockSize + Window.getHeight() / 2
 							- Player.getHeight() / 2 * blockSize;
 
 					if (entity.getTypeid() == EntityID.PLAYER) {
@@ -93,8 +95,10 @@ public class GamePanel extends Group {
 					gc.fillOval(x, y, Player.getWidth() * blockSize, Player.getHeight() * blockSize);
 				}
 
-				double x = (playerX - camX) * blockSize + Window.getWidth() / 2 - Player.getWidth() / 2 * blockSize;
-				double y = (playerY - camY) * blockSize + Window.getHeight() / 2 - Player.getHeight() / 2 * blockSize;
+				final double x = (playerX - camX) * blockSize + Window.getWidth() / 2
+						- Player.getWidth() / 2 * blockSize;
+				final double y = (playerY - camY) * blockSize + Window.getHeight() / 2
+						- Player.getHeight() / 2 * blockSize;
 
 				gc.setFill(Color.BROWN);
 				gc.fillOval(x, y, Player.getWidth() * blockSize, Player.getHeight() * blockSize);

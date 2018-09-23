@@ -20,6 +20,7 @@ public class GameLoop {
 		Window.keyFocus();
 
 		new Thread() {
+			@Override
 			public void run() {
 				while (run) {
 					final double speed = 0.02;
@@ -46,7 +47,7 @@ public class GameLoop {
 
 					try {
 						Thread.sleep(10);
-					} catch (InterruptedException e) {
+					} catch (final InterruptedException e) {
 						e.printStackTrace();
 					}
 

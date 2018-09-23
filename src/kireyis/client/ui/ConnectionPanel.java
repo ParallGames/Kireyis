@@ -13,29 +13,29 @@ public class ConnectionPanel extends Group {
 
 	public ConnectionPanel() {
 
-		Text ipT = new Text("IP : ");
+		final Text ipT = new Text("IP : ");
 		ipT.setTranslateX(10);
 		ipT.setTranslateY(46);
 
-		Text pseudoT = new Text("Pseudo : ");
+		final Text pseudoT = new Text("Pseudo : ");
 		pseudoT.setTranslateX(10);
 		pseudoT.setTranslateY(78);
 
-		TextField ipTF = new TextField();
+		final TextField ipTF = new TextField();
 		ipTF.setTranslateX(70);
 		ipTF.setTranslateY(32);
 
-		TextField pseudoTF = new TextField();
+		final TextField pseudoTF = new TextField();
 		pseudoTF.setTranslateX(70);
 		pseudoTF.setTranslateY(64);
 
-		Button bt = new Button("Connexion");
+		final Button bt = new Button("Connexion");
 		bt.setTranslateX(70);
 		bt.setTranslateY(96);
 
 		bt.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
-			public void handle(ActionEvent e) {
+			public void handle(final ActionEvent e) {
 				if (Client.connect(ipTF.getText(), pseudoTF.getText())) {
 					GameLoop.start();
 				} else {

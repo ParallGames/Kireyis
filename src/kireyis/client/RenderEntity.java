@@ -1,12 +1,12 @@
 package kireyis.client;
 
 public class RenderEntity {
-	private double x;
-	private double y;
+	private final double x;
+	private final double y;
 
-	private byte typeid;
+	private final byte typeid;
 
-	public RenderEntity(byte typeid, double x, double y) {
+	public RenderEntity(final byte typeid, final double x, final double y) {
 		this.x = x;
 		this.y = y;
 		this.typeid = typeid;

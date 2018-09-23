@@ -13,9 +13,9 @@ public class Server {
 	private static ServerSocket socket = null;
 
 	public static Vector<Entity> getPlayerEntities() {
-		Vector<Entity> players = new Vector<Entity>();
+		final Vector<Entity> players = new Vector<Entity>();
 
-		for (Client c : clients) {
+		for (final Client c : clients) {
 			players.add(c.getEntity());
 		}
 
@@ -26,7 +26,7 @@ public class Server {
 
 		try {
 			socket = new ServerSocket(Consts.PORT);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}
 		new Thread() {
@@ -34,11 +34,11 @@ public class Server {
 			public void run() {
 				while (true) {
 					try {
-						Client client = new Client(socket.accept());
+						final Client client = new Client(socket.accept());
 
 						if (client.isConnected()) {
 							System.out.println(client.getPseudo() + " connected");
-							for (Client reciever : clients) {
+							for (final Client reciever : clients) {
 								reciever.sendConnexion(client.getPseudo());
 							}
 
@@ -46,9 +46,9 @@ public class Server {
 						} else {
 							client.close();
 						}
-					} catch (SocketException e) {
+					} catch (final SocketException e) {
 						return;
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						e.printStackTrace();
 						return;
 					}
@@ -61,7 +61,7 @@ public class Server {
 			public void run() {
 				while (!socket.isClosed()) {
 					for (int n = clients.size() - 1; n >= 0; n--) {
-						Client client = clients.get(n);
+						final Client client = clients.get(n);
 						if (client.isConnected()) {
 							client.sendEntities(World.getEntities());
 							client.sendPos();
@@ -69,14 +69,14 @@ public class Server {
 							System.out.println(client.getPseudo() + " disconnected");
 							clients.remove(client);
 
-							for (Client reciever : clients) {
+							for (final Client reciever : clients) {
 								reciever.sendDisconnexion(client.getPseudo());
 							}
 						}
 					}
 					try {
 						Thread.sleep(10);
-					} catch (InterruptedException e) {
+					} catch (final InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
@@ -86,14 +86,14 @@ public class Server {
 	}
 
 	public static void stop() {
-		for (Client client : clients) {
+		for (final Client client : clients) {
 			client.sendCloseEvent();
 			client.close();
 		}
 
 		try {
 			socket.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 		System.out.println("Server closed");

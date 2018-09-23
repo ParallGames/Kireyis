@@ -21,15 +21,15 @@ public class Client {
 	public static void close() {
 		try {
 			socket.close();
-		} catch (NullPointerException e) {
+		} catch (final NullPointerException e) {
 			// Ignore
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 		GameLoop.stop();
 	}
 
-	public static boolean connect(String ip, String pseudo) {
+	public static boolean connect(final String ip, final String pseudo) {
 		Client.pseudo = pseudo;
 		try {
 			socket = new Socket(ip, Consts.PORT);
@@ -42,22 +42,12 @@ public class Client {
 			if (!in.readBoolean()) {
 				return false;
 			}
-
-			for (int y = 0; y < Consts.WORLD_SIZE; y++) {
-				for (int x = 0; x < Consts.WORLD_SIZE; x++) {
-					World.set(x, y, in.readByte());
-				}
-			}
-
-			Player.setPos(in.readDouble(), in.readDouble());
-
-			System.out.println("World recieved");
-		} catch (UnknownHostException e) {
+		} catch (final UnknownHostException e) {
 			// e.printStackTrace();
 
 			System.err.println("Ip introuvable");
 			return false;
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// e.printStackTrace();
 
 			System.err.println("Serveur introuvable");
@@ -69,39 +59,46 @@ public class Client {
 			public void run() {
 				while (true) {
 					try {
-						byte dataID = in.readByte();
+						final byte dataID = in.readByte();
 
 						if (dataID == DataID.INFO) {
-							String info = in.readUTF();
+							final String info = in.readUTF();
 							System.out.println(info);
 						} else if (dataID == DataID.CLOSE) {
 							System.err.println("Server Closed");
 							close();
 							return;
 						} else if (dataID == DataID.CLIENT_CONNEXION) {
-							String name = in.readUTF();
+							final String name = in.readUTF();
 							System.out.println(name + " connected");
 						} else if (dataID == DataID.CLIENT_DISCONNEXION) {
-							String name = in.readUTF();
+							final String name = in.readUTF();
 							System.out.println(name + " disconnected");
 						} else if (dataID == DataID.WORLD) {
-
+							for (int y = 0; y < Consts.WORLD_SIZE; y++) {
+								for (int x = 0; x < Consts.WORLD_SIZE; x++) {
+									World.set(x, y, in.readByte());
+								}
+							}
 						} else if (dataID == DataID.ENTITIES) {
-							ArrayList<RenderEntity> entities = new ArrayList<RenderEntity>();
+							final ArrayList<RenderEntity> entities = new ArrayList<RenderEntity>();
 
-							int num = in.readInt();
+							final int num = in.readInt();
 
 							for (int n = 0; n < num; n++) {
-								byte id = in.readByte();
-								double x = in.readDouble();
-								double y = in.readDouble();
+								final byte id = in.readByte();
+								final double x = in.readDouble();
+								final double y = in.readDouble();
 								entities.add(new RenderEntity(id, x, y));
 							}
 							World.setEntities(entities);
 						} else if (dataID == DataID.PLAYER_POS) {
 							Player.setPos(in.readDouble(), in.readDouble());
+						} else {
+							close();
+							throw new RuntimeException("Unknown data type");
 						}
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						System.err.println("Disconnected");
 						close();
 						return;
@@ -117,14 +114,16 @@ public class Client {
 		return pseudo;
 	}
 
-	public static synchronized void sendMove(double moveX, double moveY) {
-		try {
-			out.writeByte(DataID.PLAYER_MOVE);
-			out.writeDouble(moveX);
-			out.writeDouble(moveY);
-		} catch (IOException e) {
-			System.err.println("Disconnected");
-			close();
+	public static synchronized void sendMove(final double moveX, final double moveY) {
+		if (moveX != 0 || moveY != 0) {
+			try {
+				out.writeByte(DataID.PLAYER_MOVE);
+				out.writeDouble(moveX);
+				out.writeDouble(moveY);
+			} catch (final IOException e) {
+				System.err.println("Disconnected");
+				close();
+			}
 		}
 	}
 
@@ -132,7 +131,7 @@ public class Client {
 		try {
 			out.writeByte(DataID.VIEW_DISTANCE);
 			out.writeInt(Player.getViewDistance());
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			System.err.println("Disconnected");
 			close();
 		}

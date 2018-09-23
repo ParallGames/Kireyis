@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import kireyis.common.Consts;
 import kireyis.common.DataID;
@@ -26,9 +27,11 @@ public final class Client {
 
 	private boolean connected = false;
 
-	private ArrayList<String> messages = new ArrayList<String>();
+	private final ArrayList<String> messages = new ArrayList<String>();
 
-	public Client(Socket socket) {
+	private final LinkedBlockingQueue<Runnable> sendRequests = new LinkedBlockingQueue<Runnable>();
+
+	public Client(final Socket socket) {
 		this.socket = socket;
 
 		try {
@@ -39,7 +42,7 @@ public final class Client {
 
 			boolean pseudoUsed = false;
 
-			for (Client client : Server.clients) {
+			for (final Client client : Server.clients) {
 				if (client.getPseudo().equalsIgnoreCase(pseudo)) {
 					pseudoUsed = true;
 					break;
@@ -53,61 +56,74 @@ public final class Client {
 				out.writeBoolean(true);
 			}
 
-			for (int y = 0; y < Consts.WORLD_SIZE; y++) {
-				for (int x = 0; x < Consts.WORLD_SIZE; x++) {
-					out.writeByte(World.get(x, y));
-				}
-			}
-			out.writeDouble(x);
-			out.writeDouble(y);
-
-		} catch (IOException e) {
+			sendWorld();
+		} catch (final IOException e) {
 			e.printStackTrace();
 		} finally {
 			id = pseudo.hashCode();
 		}
 
+		// Data receiving loop
 		new Thread() {
 			@Override
 			public void run() {
 				while (true) {
 					try {
-						byte dataID = in.readByte();
+						final byte dataID = in.readByte();
 						if (dataID == DataID.PLAYER_MOVE) {
-							double moveX = in.readDouble();
-							double moveY = in.readDouble();
+							final double moveX = in.readDouble();
+							final double moveY = in.readDouble();
 
-							x += moveX;
-							y += moveY;
-
-							if (x < 0) {
+							if (x + moveX < 0) {
 								x = 0;
-							} else if (x >= Consts.WORLD_SIZE) {
+							} else if (x + moveX > Consts.WORLD_SIZE) {
 								x = Consts.WORLD_SIZE;
+							} else {
+								x += moveX;
 							}
 
-							if (y < 0) {
+							if (y + moveY < 0) {
 								y = 0;
-							} else if (y >= Consts.WORLD_SIZE) {
+							} else if (y + moveY > Consts.WORLD_SIZE) {
 								y = Consts.WORLD_SIZE;
+							} else {
+								y += moveY;
 							}
 						} else if (dataID == DataID.VIEW_DISTANCE) {
 							viewDistance = in.readInt();
 						}
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						close();
 						return;
 					}
 				}
 			}
 		}.start();
+
+		// Data sending loop
+		new Thread() {
+			@Override
+			public void run() {
+				while (connected) {
+					while (!sendRequests.isEmpty()) {
+						sendRequests.remove().run();
+					}
+					try {
+						Thread.sleep(10);
+					} catch (final InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}.start();
+
 		connected = true;
 	}
 
 	public void close() {
 		try {
 			socket.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 		connected = false;
@@ -125,64 +141,109 @@ public final class Client {
 		return connected;
 	}
 
+	public synchronized void sendWorld() {
+		sendRequests.add(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					out.writeByte(DataID.WORLD);
+
+					for (int y = 0; y < Consts.WORLD_SIZE; y++) {
+						for (int x = 0; x < Consts.WORLD_SIZE; x++) {
+							out.writeByte(World.get(x, y));
+						}
+					}
+				} catch (final IOException e) {
+					close();
+				}
+			}
+		});
+	}
+
 	public synchronized void sendCloseEvent() {
-		try {
-			out.writeByte(DataID.CLOSE);
-		} catch (IOException e) {
-			close();
-		}
-	}
-
-	public synchronized void sendConnexion(String username) {
-		try {
-			out.writeByte(DataID.CLIENT_CONNEXION);
-			out.writeUTF(username);
-		} catch (IOException e) {
-			close();
-		}
-	}
-
-	public synchronized void sendDisconnexion(String username) {
-		try {
-			out.writeByte(DataID.CLIENT_DISCONNEXION);
-			out.writeUTF(username);
-		} catch (IOException e) {
-			close();
-		}
-	}
-
-	public synchronized void sendEntities(ArrayList<Entity> entities) {
-		ArrayList<Entity> sended = new ArrayList<Entity>();
-
-		for (Entity entity : entities) {
-			if (entity.getX() < x + viewDistance && entity.getX() > x - viewDistance && entity.getY() < y + viewDistance
-					&& entity.getY() > y - viewDistance && entity.getID() != id) {
-				sended.add(entity);
+		sendRequests.add(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					out.writeByte(DataID.CLOSE);
+				} catch (final IOException e) {
+					close();
+				}
 			}
-		}
+		});
+	}
 
-		try {
-			out.writeByte(DataID.ENTITIES);
-			out.writeInt(sended.size());
-
-			for (Entity entity : sended) {
-				out.writeByte(entity.getTypeid());
-				out.writeDouble(entity.getX());
-				out.writeDouble(entity.getY());
+	public synchronized void sendConnexion(final String username) {
+		sendRequests.add(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					out.writeByte(DataID.CLIENT_CONNEXION);
+					out.writeUTF(username);
+				} catch (final IOException e) {
+					close();
+				}
 			}
-		} catch (IOException e) {
-			close();
-		}
+		});
+	}
+
+	public synchronized void sendDisconnexion(final String username) {
+		sendRequests.add(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					out.writeByte(DataID.CLIENT_DISCONNEXION);
+					out.writeUTF(username);
+				} catch (final IOException e) {
+					close();
+				}
+			}
+		});
+	}
+
+	public synchronized void sendEntities(final ArrayList<Entity> entities) {
+		sendRequests.add(new Runnable() {
+			@Override
+			public void run() {
+				final ArrayList<Entity> sended = new ArrayList<Entity>();
+
+				for (final Entity entity : entities) {
+					if (entity.getX() < x + viewDistance && entity.getX() > x - viewDistance
+							&& entity.getY() < y + viewDistance && entity.getY() > y - viewDistance
+							&& entity.getID() != id) {
+						sended.add(entity);
+					}
+				}
+
+				try {
+					out.writeByte(DataID.ENTITIES);
+					out.writeInt(sended.size());
+
+					for (final Entity entity : sended) {
+						out.writeByte(entity.getTypeid());
+						out.writeDouble(entity.getX());
+						out.writeDouble(entity.getY());
+					}
+				} catch (final IOException e) {
+					close();
+				}
+			}
+		});
 	}
 
 	public synchronized void sendPos() {
-		try {
-			out.writeByte(DataID.PLAYER_POS);
-			out.writeDouble(x);
-			out.writeDouble(y);
-		} catch (IOException e) {
-			close();
-		}
+		sendRequests.add(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					out.writeByte(DataID.PLAYER_POS);
+					out.writeDouble(x);
+					out.writeDouble(y);
+				} catch (final IOException e) {
+					close();
+				}
+			}
+		});
 	}
 
 	public Entity getEntity() {

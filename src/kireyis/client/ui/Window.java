@@ -17,7 +17,7 @@ public class Window extends Application {
 	private static final Key key = new Key();
 
 	@Override
-	public void start(Stage primaryStage) {
+	public void start(final Stage primaryStage) {
 		scene.setFill(Color.rgb(191, 191, 191));
 
 		gamePanel.setVisible(false);
@@ -47,11 +47,11 @@ public class Window extends Application {
 		popupPanel.setVisible(!popupPanel.isVisible());
 	}
 
-	public static void showGame(boolean show) {
+	public static void showGame(final boolean show) {
 		gamePanel.setVisible(show);
 	}
 
-	public static void showConnection(boolean show) {
+	public static void showConnection(final boolean show) {
 		if (show) {
 			popupPanel.setVisible(false);
 		}

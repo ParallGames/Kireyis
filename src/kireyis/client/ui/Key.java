@@ -22,8 +22,9 @@ public class Key extends Group {
 
 	public Key() {
 		this.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			public void handle(KeyEvent e) {
-				KeyCode code = e.getCode();
+			@Override
+			public void handle(final KeyEvent e) {
+				final KeyCode code = e.getCode();
 
 				if (code == QUIT) {
 					if (!quitDown) {
@@ -43,8 +44,9 @@ public class Key extends Group {
 		});
 
 		this.setOnKeyReleased(new EventHandler<KeyEvent>() {
-			public void handle(KeyEvent e) {
-				KeyCode code = e.getCode();
+			@Override
+			public void handle(final KeyEvent e) {
+				final KeyCode code = e.getCode();
 
 				if (code == QUIT) {
 					quitDown = false;

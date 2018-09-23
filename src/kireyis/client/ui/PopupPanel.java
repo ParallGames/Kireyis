@@ -11,14 +11,14 @@ import kireyis.client.GameLoop;
 
 public class PopupPanel extends Group {
 	public PopupPanel() {
-		Rectangle background = new Rectangle(1280, 720);
+		final Rectangle background = new Rectangle(1280, 720);
 		background.setFill(Color.rgb(0, 0, 0, 0.5));
 		this.getChildren().add(background);
 
-		Button disconnect = new Button("Disconnect");
+		final Button disconnect = new Button("Disconnect");
 		disconnect.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
-			public void handle(ActionEvent e) {
+			public void handle(final ActionEvent e) {
 				GameLoop.stop();
 				Client.close();
 			}

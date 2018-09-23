@@ -19,7 +19,7 @@ public class World {
 		entities.clear();
 	}
 
-	public static byte get(int x, int y) {
+	public static byte get(final int x, final int y) {
 		if (x < 0 || x >= Consts.WORLD_SIZE || y < 0 || y >= Consts.WORLD_SIZE) {
 			return BlockID.VOID;
 		}
@@ -27,21 +27,21 @@ public class World {
 		return world[x][y];
 	}
 
-	public static void set(int x, int y, byte id) {
+	public static void set(final int x, final int y, final byte id) {
 		world[x][y] = id;
 	}
 
 	public static synchronized ArrayList<RenderEntity> getEntities() {
-		ArrayList<RenderEntity> returnedEntities = new ArrayList<RenderEntity>();
+		final ArrayList<RenderEntity> returnedEntities = new ArrayList<RenderEntity>();
 
-		for (RenderEntity entity : entities) {
+		for (final RenderEntity entity : entities) {
 			returnedEntities.add(entity);
 		}
 
 		return returnedEntities;
 	}
 
-	public static synchronized void setEntities(ArrayList<RenderEntity> newEntities) {
+	public static synchronized void setEntities(final ArrayList<RenderEntity> newEntities) {
 		entities.clear();
 		entities.addAll(newEntities);
 	}

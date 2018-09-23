@@ -46,7 +46,7 @@ public class Player {
 		}
 	}
 
-	public static void setPos(double x, double y) {
+	public static void setPos(final double x, final double y) {
 		Player.x = x;
 		Player.y = y;
 	}

@@ -18,12 +18,12 @@ public class World {
 		}
 	}
 
-	public static byte get(int x, int y) {
+	public static byte get(final int x, final int y) {
 		return world[x][y];
 	}
 
 	public static ArrayList<Entity> getEntities() {
-		ArrayList<Entity> list = new ArrayList<Entity>();
+		final ArrayList<Entity> list = new ArrayList<Entity>();
 		list.addAll(entities);
 		list.addAll(Server.getPlayerEntities());
 

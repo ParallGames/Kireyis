@@ -1,13 +1,13 @@
 package kireyis.server;
 
 public class Entity {
-	private double x;
-	private double y;
+	private final double x;
+	private final double y;
 
-	private byte typeid;
-	private int id;
+	private final byte typeid;
+	private final int id;
 
-	public Entity(byte typeid, double x, double y, int id) {
+	public Entity(final byte typeid, final double x, final double y, final int id) {
 		this.x = x;
 		this.y = y;
 		this.typeid = typeid;
