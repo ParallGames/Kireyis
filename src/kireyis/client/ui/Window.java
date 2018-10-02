@@ -31,8 +31,6 @@ public class Window extends Application {
 		primaryStage.setResizable(true);
 		primaryStage.setTitle("Kireyis");
 		primaryStage.show();
-
-		// GameLoop.start();
 	}
 
 	public static int getHeight() {

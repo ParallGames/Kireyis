@@ -6,11 +6,6 @@ public abstract class Entity {
 
 	protected int id;
 
-	/*
-	 * public Entity(final byte typeID, final double x, final double y, final int
-	 * id) { this.x = x; this.y = y; this.typeID = typeID; this.id = id; }
-	 */
-
 	public double getX() {
 		return x;
 	}

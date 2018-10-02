@@ -43,14 +43,10 @@ public class Client {
 				return false;
 			}
 		} catch (final UnknownHostException e) {
-			// e.printStackTrace();
-
-			System.err.println("Ip introuvable");
+			System.err.println("IP : " + ip + " is not valid.");
 			return false;
 		} catch (final IOException e) {
-			// e.printStackTrace();
-
-			System.err.println("Serveur introuvable");
+			System.err.println("Server not found.");
 			return false;
 		}
 

@@ -10,15 +10,6 @@ public class World {
 
 	private static final byte world[][] = new byte[Consts.WORLD_SIZE][Consts.WORLD_SIZE];
 
-	public static void reset() {
-		for (int x = 0; x < Consts.WORLD_SIZE; x++) {
-			for (int y = 0; y < Consts.WORLD_SIZE; y++) {
-				world[x][y] = BlockID.UNKNOWN;
-			}
-		}
-		entities.clear();
-	}
-
 	public static byte get(final int x, final int y) {
 		if (x < 0 || x >= Consts.WORLD_SIZE || y < 0 || y >= Consts.WORLD_SIZE) {
 			return BlockID.VOID;

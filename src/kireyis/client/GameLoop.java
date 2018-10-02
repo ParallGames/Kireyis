@@ -8,8 +8,6 @@ public class GameLoop {
 	private static boolean run = false;
 
 	public static void start() {
-		// World.reset();
-
 		if (run) {
 			throw new RuntimeException("Game loop started twice");
 		}

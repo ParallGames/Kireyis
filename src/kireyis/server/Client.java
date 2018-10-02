@@ -26,6 +26,8 @@ public final class Client extends Entity {
 
 	private final LinkedBlockingQueue<Runnable> sendRequests = new LinkedBlockingQueue<Runnable>();
 
+	private Thread sendingThread;
+
 	public Client(final Socket socket) {
 		x = 5;
 		y = 5;
@@ -99,32 +101,36 @@ public final class Client extends Entity {
 		}.start();
 
 		// Data sending loop
-		new Thread() {
+		sendingThread = new Thread() {
 			@Override
 			public void run() {
 				while (connected) {
-					while (!sendRequests.isEmpty()) {
-						sendRequests.remove().run();
-					}
 					try {
-						Thread.sleep(10);
-					} catch (final InterruptedException e) {
-						e.printStackTrace();
+						sendRequests.take().run();
+					} catch (InterruptedException e) {
+						return;
 					}
 				}
 			}
-		}.start();
+		};
+		sendingThread.start();
 
 		connected = true;
 	}
 
 	public void close() {
+		connected = false;
+
+		try {
+			sendingThread.interrupt();
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
 		try {
 			socket.close();
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
-		connected = false;
 	}
 
 	public ArrayList<String> getMessages() {
