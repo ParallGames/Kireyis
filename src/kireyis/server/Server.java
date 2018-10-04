@@ -12,6 +12,9 @@ public class Server {
 
 	private static ServerSocket socket = null;
 
+	private static Thread connectionThread;
+	private static Thread gameLoopThread;
+
 	public static void start() {
 
 		try {
@@ -21,7 +24,7 @@ public class Server {
 		}
 
 		// Client connection thread
-		new Thread() {
+		connectionThread = new Thread() {
 			@Override
 			public void run() {
 				while (true) {
@@ -47,10 +50,11 @@ public class Server {
 					}
 				}
 			}
-		}.start();
+		};
+		connectionThread.start();
 
 		// Game loop thread
-		new Thread() {
+		gameLoopThread = new Thread() {
 			@Override
 			public void run() {
 				while (!socket.isClosed()) {
@@ -60,13 +64,14 @@ public class Server {
 							client.sendEntities(World.getEntities());
 							client.sendPos();
 						} else {
-							System.out.println(client.getPseudo() + " disconnected");
+							client.close();
 							clients.remove(client);
 							World.getEntities().remove(client);
 
 							for (final Client receiver : clients) {
 								receiver.sendDisconnection(client.getPseudo());
 							}
+							System.out.println(client.getPseudo() + " disconnected");
 						}
 					}
 					try {
@@ -76,21 +81,32 @@ public class Server {
 					}
 				}
 			}
-		}.start();
+		};
+		gameLoopThread.start();
+
 		System.out.println("Server ready");
 	}
 
 	public static void stop() {
-		for (final Client client : clients) {
-			client.sendCloseEvent();
-			client.close();
-		}
-
 		try {
 			socket.close();
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
+
+		try {
+			connectionThread.join();
+			gameLoopThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		for (final Client client : clients) {
+			client.sendClose();
+			client.close();
+		}
+		clients.clear();
+
 		System.out.println("Server closed");
 	}
 }

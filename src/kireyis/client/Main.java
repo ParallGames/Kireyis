@@ -8,6 +8,7 @@ public class Main {
 		Application.launch(Window.class);
 		GameLoop.stop();
 
+		Client.sendClose();
 		Client.close();
 	}
 }

@@ -22,10 +22,9 @@ public final class Client extends Entity {
 
 	private boolean connected = false;
 
-	private final ArrayList<String> messages = new ArrayList<String>();
-
 	private final LinkedBlockingQueue<Runnable> sendRequests = new LinkedBlockingQueue<Runnable>();
 
+	private Thread receivingThread;
 	private Thread sendingThread;
 
 	public Client(final Socket socket) {
@@ -38,12 +37,13 @@ public final class Client extends Entity {
 			in = new DataInputStream(socket.getInputStream());
 			out = new DataOutputStream(socket.getOutputStream());
 
-			pseudo = in.readUTF();
+			pseudo = in.readUTF().toLowerCase();
+			id = pseudo.hashCode();
 
 			boolean pseudoUsed = false;
 
 			for (final Client client : Server.clients) {
-				if (client.getPseudo().equalsIgnoreCase(pseudo)) {
+				if (client.getID() == id) {
 					pseudoUsed = true;
 					break;
 				}
@@ -59,20 +59,17 @@ public final class Client extends Entity {
 			sendWorld();
 		} catch (final IOException e) {
 			e.printStackTrace();
-		} finally {
-			id = pseudo.hashCode();
 		}
 
 		// Data receiving loop
-		new Thread() {
+		receivingThread = new Thread() {
 			@Override
 			public void run() {
-				while (true) {
+				while (connected) {
 					try {
 						final byte dataID = in.readByte();
 						if (dataID == DataID.PLAYER_MOVE) {
 							final double moveX = in.readDouble();
-							final double moveY = in.readDouble();
 
 							if (x + moveX < 0) {
 								x = 0;
@@ -81,6 +78,8 @@ public final class Client extends Entity {
 							} else {
 								x += moveX;
 							}
+
+							final double moveY = in.readDouble();
 
 							if (y + moveY < 0) {
 								y = 0;
@@ -91,14 +90,24 @@ public final class Client extends Entity {
 							}
 						} else if (dataID == DataID.VIEW_DISTANCE) {
 							viewDistance = in.readInt();
+						} else if (dataID == DataID.CLOSE) {
+							connected = false;
+							return;
+						} else {
+							System.err.println("Wrong datatype received from " + pseudo + ".");
+							connected = false;
+							return;
 						}
 					} catch (final IOException e) {
-						close();
+						if (connected) {
+							System.err.println("Connection error with " + pseudo + ".");
+							connected = false;
+						}
 						return;
 					}
 				}
 			}
-		}.start();
+		};
 
 		// Data sending loop
 		sendingThread = new Thread() {
@@ -113,28 +122,50 @@ public final class Client extends Entity {
 				}
 			}
 		};
-		sendingThread.start();
-
 		connected = true;
+
+		receivingThread.start();
+		sendingThread.start();
 	}
 
 	public void close() {
 		connected = false;
 
 		try {
-			sendingThread.interrupt();
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		}
-		try {
 			socket.close();
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
+		try {
+			sendingThread.interrupt();
+		} catch (NullPointerException e) {
+			// Ignore
+		}
+
+		try {
+			receivingThread.join();
+		} catch (NullPointerException e) {
+			// Ignore
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			sendingThread.join();
+		} catch (NullPointerException e) {
+			// Ignore
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
-	public ArrayList<String> getMessages() {
-		return messages;
+	private void queue(Runnable runnable) {
+		if (sendRequests.size() > Consts.MAX_QUEUE) {
+			System.err.println(pseudo + "'s connection timed out.");
+			connected = false;
+		} else {
+			sendRequests.add(runnable);
+		}
 	}
 
 	public String getPseudo() {
@@ -146,7 +177,7 @@ public final class Client extends Entity {
 	}
 
 	public synchronized void sendWorld() {
-		sendRequests.add(new Runnable() {
+		queue(new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -158,55 +189,55 @@ public final class Client extends Entity {
 						}
 					}
 				} catch (final IOException e) {
-					close();
+					connected = false;
 				}
 			}
 		});
 	}
 
-	public synchronized void sendCloseEvent() {
-		sendRequests.add(new Runnable() {
+	public synchronized void sendClose() {
+		queue(new Runnable() {
 			@Override
 			public void run() {
 				try {
 					out.writeByte(DataID.CLOSE);
 				} catch (final IOException e) {
-					close();
+					connected = false;
 				}
 			}
 		});
 	}
 
 	public synchronized void sendConnection(final String username) {
-		sendRequests.add(new Runnable() {
+		queue(new Runnable() {
 			@Override
 			public void run() {
 				try {
 					out.writeByte(DataID.CLIENT_CONNECTION);
 					out.writeUTF(username);
 				} catch (final IOException e) {
-					close();
+					connected = false;
 				}
 			}
 		});
 	}
 
 	public synchronized void sendDisconnection(final String username) {
-		sendRequests.add(new Runnable() {
+		queue(new Runnable() {
 			@Override
 			public void run() {
 				try {
 					out.writeByte(DataID.CLIENT_DISCONNECTION);
 					out.writeUTF(username);
 				} catch (final IOException e) {
-					close();
+					connected = false;
 				}
 			}
 		});
 	}
 
 	public synchronized void sendEntities(final ArrayList<Entity> entities) {
-		sendRequests.add(new Runnable() {
+		queue(new Runnable() {
 			@Override
 			public void run() {
 				final ArrayList<Entity> sended = new ArrayList<Entity>();
@@ -229,14 +260,14 @@ public final class Client extends Entity {
 						out.writeDouble(entity.getY());
 					}
 				} catch (final IOException e) {
-					close();
+					connected = false;
 				}
 			}
 		});
 	}
 
 	public synchronized void sendPos() {
-		sendRequests.add(new Runnable() {
+		queue(new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -244,7 +275,7 @@ public final class Client extends Entity {
 					out.writeDouble(x);
 					out.writeDouble(y);
 				} catch (final IOException e) {
-					close();
+					connected = false;
 				}
 			}
 		});

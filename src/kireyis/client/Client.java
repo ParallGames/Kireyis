@@ -95,7 +95,6 @@ public class Client {
 							throw new RuntimeException("Unknown data type");
 						}
 					} catch (final IOException e) {
-						System.err.println("Disconnected");
 						close();
 						return;
 					}
@@ -117,7 +116,6 @@ public class Client {
 				out.writeDouble(moveX);
 				out.writeDouble(moveY);
 			} catch (final IOException e) {
-				System.err.println("Disconnected");
 				close();
 			}
 		}
@@ -128,7 +126,16 @@ public class Client {
 			out.writeByte(DataID.VIEW_DISTANCE);
 			out.writeInt(Player.getViewDistance());
 		} catch (final IOException e) {
-			System.err.println("Disconnected");
+			close();
+		}
+	}
+
+	public static synchronized void sendClose() {
+		try {
+			out.writeByte(DataID.CLOSE);
+		} catch (NullPointerException e) {
+			// Ignore
+		} catch (IOException e) {
 			close();
 		}
 	}
