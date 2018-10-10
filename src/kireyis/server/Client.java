@@ -37,13 +37,12 @@ public final class Client extends Entity {
 			in = new DataInputStream(socket.getInputStream());
 			out = new DataOutputStream(socket.getOutputStream());
 
-			pseudo = in.readUTF().toLowerCase();
-			id = pseudo.hashCode();
+			pseudo = in.readUTF();
 
 			boolean pseudoUsed = false;
 
 			for (final Client client : Server.clients) {
-				if (client.getID() == id) {
+				if (client.getPseudo().equalsIgnoreCase(pseudo)) {
 					pseudoUsed = true;
 					break;
 				}
@@ -69,25 +68,7 @@ public final class Client extends Entity {
 					try {
 						final byte dataID = in.readByte();
 						if (dataID == DataID.PLAYER_MOVE) {
-							final double moveX = in.readDouble();
-
-							if (x + moveX < 0) {
-								x = 0;
-							} else if (x + moveX > Consts.WORLD_SIZE) {
-								x = Consts.WORLD_SIZE;
-							} else {
-								x += moveX;
-							}
-
-							final double moveY = in.readDouble();
-
-							if (y + moveY < 0) {
-								y = 0;
-							} else if (y + moveY > Consts.WORLD_SIZE) {
-								y = Consts.WORLD_SIZE;
-							} else {
-								y += moveY;
-							}
+							move(in.readDouble(), in.readDouble());
 						} else if (dataID == DataID.VIEW_DISTANCE) {
 							viewDistance = in.readInt();
 						} else if (dataID == DataID.CLOSE) {
@@ -237,6 +218,9 @@ public final class Client extends Entity {
 	}
 
 	public synchronized void sendEntities(final ArrayList<Entity> entities) {
+		if (entities.isEmpty()) {
+			return;
+		}
 		queue(new Runnable() {
 			@Override
 			public void run() {
@@ -245,7 +229,7 @@ public final class Client extends Entity {
 				for (final Entity entity : entities) {
 					if (entity.getX() < x + viewDistance && entity.getX() > x - viewDistance
 							&& entity.getY() < y + viewDistance && entity.getY() > y - viewDistance
-							&& entity.getID() != id) {
+							&& entity != Client.this) {
 						sended.add(entity);
 					}
 				}
@@ -284,5 +268,10 @@ public final class Client extends Entity {
 	@Override
 	public int getTypeID() {
 		return EntityID.PLAYER;
+	}
+
+	@Override
+	public double getSize() {
+		return 0.5;
 	}
 }

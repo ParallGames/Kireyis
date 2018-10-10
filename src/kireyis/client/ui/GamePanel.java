@@ -83,10 +83,8 @@ public class GamePanel extends Group {
 				}
 
 				for (final RenderEntity entity : entities) {
-					final double x = (entity.getX() - camX) * blockSize + Window.getWidth() / 2
-							- Player.getWidth() / 2 * blockSize;
-					final double y = (entity.getY() - camY) * blockSize + Window.getHeight() / 2
-							- Player.getHeight() / 2 * blockSize;
+					final double x = (entity.getX() - camX) * blockSize + Window.getWidth() / 2;
+					final double y = (entity.getY() - camY) * blockSize + Window.getHeight() / 2;
 
 					if (entity.getTypeid() == EntityID.PLAYER) {
 						gc.setFill(Color.PURPLE);
@@ -95,10 +93,8 @@ public class GamePanel extends Group {
 					gc.fillOval(x, y, Player.getWidth() * blockSize, Player.getHeight() * blockSize);
 				}
 
-				final double x = (playerX - camX) * blockSize + Window.getWidth() / 2
-						- Player.getWidth() / 2 * blockSize;
-				final double y = (playerY - camY) * blockSize + Window.getHeight() / 2
-						- Player.getHeight() / 2 * blockSize;
+				final double x = (playerX - camX) * blockSize + Window.getWidth() / 2;
+				final double y = (playerY - camY) * blockSize + Window.getHeight() / 2;
 
 				gc.setFill(Color.BROWN);
 				gc.fillOval(x, y, Player.getWidth() * blockSize, Player.getHeight() * blockSize);
