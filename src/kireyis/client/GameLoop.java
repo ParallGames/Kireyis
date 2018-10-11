@@ -21,25 +21,23 @@ public class GameLoop {
 			@Override
 			public void run() {
 				while (run) {
-					final double speed = 0.02;
-
-					double moveX = 0;
-					double moveY = 0;
-
-					if (Key.isUpDown()) {
-						moveY -= speed;
-					}
-					if (Key.isDownDown()) {
-						moveY += speed;
-					}
+					byte moveX = 0;
 					if (Key.isLeftDown()) {
-						moveX -= speed;
+						moveX--;
 					}
 					if (Key.isRightDown()) {
-						moveX += speed;
+						moveX++;
 					}
+					Client.sendHorizontalAccel(moveX);
 
-					Client.sendMove(moveX, moveY);
+					byte moveY = 0;
+					if (Key.isUpDown()) {
+						moveY--;
+					}
+					if (Key.isDownDown()) {
+						moveY++;
+					}
+					Client.sendVerticalAccel(moveY);
 
 					Window.update();
 
@@ -48,7 +46,6 @@ public class GameLoop {
 					} catch (final InterruptedException e) {
 						e.printStackTrace();
 					}
-
 				}
 			}
 		}.start();

@@ -109,15 +109,35 @@ public class Client {
 		return pseudo;
 	}
 
-	public static synchronized void sendMove(final double moveX, final double moveY) {
-		if (moveX != 0 || moveY != 0) {
-			try {
-				out.writeByte(DataID.PLAYER_MOVE);
-				out.writeDouble(moveX);
-				out.writeDouble(moveY);
-			} catch (final IOException e) {
-				close();
-			}
+	private static byte currentHorizontalAccel = 0;
+
+	public static synchronized void sendHorizontalAccel(byte accel) {
+		if (accel == currentHorizontalAccel) {
+			return;
+		}
+		currentHorizontalAccel = accel;
+
+		try {
+			out.writeByte(DataID.HORIZONTAL_ACCEL);
+			out.writeByte(accel);
+		} catch (final IOException e) {
+			close();
+		}
+	}
+
+	private static byte currentVerticalAccel = 0;
+
+	public static synchronized void sendVerticalAccel(byte accel) {
+		if (accel == currentVerticalAccel) {
+			return;
+		}
+		currentVerticalAccel = accel;
+
+		try {
+			out.writeByte(DataID.VERTICAL_ACCEL);
+			out.writeByte(accel);
+		} catch (final IOException e) {
+			close();
 		}
 	}
 

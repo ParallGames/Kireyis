@@ -75,6 +75,10 @@ public class Server {
 						}
 					}
 
+					for (Entity e : World.getEntities()) {
+						e.tick();
+					}
+
 					for (int a = 0; a < World.getEntities().size(); a++) {
 						for (int b = a + 1; b < World.getEntities().size(); b++) {
 							Entity.collide(World.getEntities().get(a), World.getEntities().get(b));

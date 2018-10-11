@@ -14,6 +14,9 @@ import kireyis.common.EntityID;
 public final class Client extends Entity {
 	private int viewDistance = 5;
 
+	private byte horizontalAccel = 0;
+	private byte verticalAccel = 0;
+
 	private final Socket socket;
 	private DataInputStream in;
 	private DataOutputStream out;
@@ -67,8 +70,10 @@ public final class Client extends Entity {
 				while (connected) {
 					try {
 						final byte dataID = in.readByte();
-						if (dataID == DataID.PLAYER_MOVE) {
-							move(in.readDouble(), in.readDouble());
+						if (dataID == DataID.HORIZONTAL_ACCEL) {
+							horizontalAccel = in.readByte();
+						} else if (dataID == DataID.VERTICAL_ACCEL) {
+							verticalAccel = in.readByte();
 						} else if (dataID == DataID.VIEW_DISTANCE) {
 							viewDistance = in.readInt();
 						} else if (dataID == DataID.CLOSE) {
@@ -227,6 +232,7 @@ public final class Client extends Entity {
 				final ArrayList<Entity> sended = new ArrayList<Entity>();
 
 				for (final Entity entity : entities) {
+					double viewDistance = Client.this.viewDistance + entity.getSize();
 					if (entity.getX() < x + viewDistance && entity.getX() > x - viewDistance
 							&& entity.getY() < y + viewDistance && entity.getY() > y - viewDistance
 							&& entity != Client.this) {
@@ -273,5 +279,38 @@ public final class Client extends Entity {
 	@Override
 	public double getSize() {
 		return 0.5;
+	}
+
+	@Override
+	public double getFriction() {
+		return 0.9;
+	}
+
+	@Override
+	public double getAcceleration() {
+		return 0.002;
+	}
+
+	@Override
+	public void tick() {
+		double accelX;
+		if (horizontalAccel == 1) {
+			accelX = getAcceleration();
+		} else if (horizontalAccel == -1) {
+			accelX = -getAcceleration();
+		} else {
+			accelX = 0;
+		}
+
+		double accelY;
+		if (verticalAccel == 1) {
+			accelY = getAcceleration();
+		} else if (verticalAccel == -1) {
+			accelY = -getAcceleration();
+		} else {
+			accelY = 0;
+		}
+
+		this.accelerate(accelX, accelY);
 	}
 }

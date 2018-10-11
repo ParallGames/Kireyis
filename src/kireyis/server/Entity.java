@@ -6,12 +6,12 @@ public abstract class Entity {
 	protected double x;
 	protected double y;
 
-	private double moveX;
-	private double moveY;
+	private double speedX;
+	private double speedY;
 
 	public synchronized void updateMove() {
-		x += moveX;
-		moveX = 0;
+		x += speedX;
+		speedX *= getFriction();
 
 		if (x < 0) {
 			x = 0;
@@ -19,8 +19,8 @@ public abstract class Entity {
 			x = Consts.WORLD_SIZE - this.getSize();
 		}
 
-		y += moveY;
-		moveY = 0;
+		y += speedY;
+		speedY *= getFriction();
 
 		if (y < 0) {
 			y = 0;
@@ -29,9 +29,9 @@ public abstract class Entity {
 		}
 	}
 
-	protected synchronized void move(final double moveX, final double moveY) {
-		this.moveX += moveX;
-		this.moveY += moveY;
+	protected synchronized void accelerate(final double accelX, final double accelY) {
+		this.speedX += accelX;
+		this.speedY += accelY;
 	}
 
 	public synchronized double getX() {
@@ -46,6 +46,12 @@ public abstract class Entity {
 
 	public abstract int getTypeID();
 
+	public abstract double getFriction();
+
+	public abstract double getAcceleration();
+
+	public abstract void tick();
+
 	public static void collide(final Entity e1, final Entity e2) {
 		double distX = e1.x - e2.x;
 		double distY = e1.y - e2.y;
@@ -56,13 +62,13 @@ public abstract class Entity {
 			return;
 		}
 
-		double angle = Math.atan2(distX, distY);
-		double moveSize = Math.abs(avgSize) - Math.sqrt(distX * distX + distY * distY);
+		double moveSize = avgSize - Math.sqrt(distX * distX + distY * distY);
+		moveSize /= 32;
 
-		e1.move(Math.sin(angle) * moveSize, Math.cos(angle) * moveSize);
+		double angle = Math.atan2(distX, distY);
+		e1.accelerate(Math.sin(angle) * moveSize, Math.cos(angle) * moveSize);
 
 		angle += Math.PI;
-
-		e2.move(Math.sin(angle) * moveSize, Math.cos(angle) * moveSize);
+		e2.accelerate(Math.sin(angle) * moveSize, Math.cos(angle) * moveSize);
 	}
 }

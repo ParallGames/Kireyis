@@ -40,8 +40,8 @@ public class GamePanel extends Group {
 	}
 
 	public void update() {
-		final double camX = Player.getX();
-		final double camY = Player.getY();
+		final double camX = Player.getX() + Player.getWidth() / 2d;
+		final double camY = Player.getY() + Player.getHeight() / 2d;
 
 		final double playerX = Player.getX();
 		final double playerY = Player.getY();

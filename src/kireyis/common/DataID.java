@@ -21,29 +21,34 @@ public class DataID {
 	 * Nothing
 	 */
 
-	public static final byte PLAYER_MOVE = 5;
+	public static final byte HORIZONTAL_ACCEL = 5;
 	/*
-	 * double moveX double moveY
+	 * 1 to go right 0 to don't move -1 to go left
 	 */
 
-	public static final byte PLAYER_POS = 6;
+	public static final byte VERTICAL_ACCEL = 6;
+	/*
+	 * 1 to go down 0 to don't move -1 to go up
+	 */
+
+	public static final byte PLAYER_POS = 7;
 	/*
 	 * double x double y
 	 */
 
-	public static final byte ENTITIES = 7;
+	public static final byte ENTITIES = 8;
 	/*
 	 * int numberOfEntities
 	 *
 	 * for each entity byte id, double x, double y, double rotation
 	 */
 
-	public static final byte WORLD = 8;
+	public static final byte WORLD = 9;
 	/*
 	 * for each block byte id
 	 */
 
-	public static final byte VIEW_DISTANCE = 9;
+	public static final byte VIEW_DISTANCE = 10;
 	/*
 	 * int viewDistance
 	 */
