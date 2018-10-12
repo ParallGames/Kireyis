@@ -8,6 +8,10 @@ import java.util.Vector;
 import kireyis.common.Consts;
 
 public class Server {
+	private static final int tps = 100;
+	private static final long interval = 1_000_000_000L / tps;
+	private static long time = System.nanoTime();
+
 	public static final Vector<Client> clients = new Vector<Client>();
 
 	private static ServerSocket socket = null;
@@ -89,11 +93,15 @@ public class Server {
 						e.updateMove();
 					}
 
-					try {
-						Thread.sleep(10);
-					} catch (final InterruptedException e) {
-						e.printStackTrace();
+					long sleep = time - System.nanoTime() + interval;
+					if (sleep > 0) {
+						try {
+							Thread.sleep(sleep / 1_000_000L, (int) (sleep % 1_000_000L));
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 					}
+					time = System.nanoTime();
 				}
 			}
 		};

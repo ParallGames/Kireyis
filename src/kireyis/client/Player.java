@@ -6,7 +6,7 @@ public class Player {
 	private static double x;
 	private static double y;
 
-	private static int viewDistance = 5;
+	private static int viewDistance = Consts.DEFAULT_VIEW;
 
 	private static final double WIDTH = 0.5;
 	private static final double HEIGHT = 0.5;

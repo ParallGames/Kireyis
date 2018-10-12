@@ -12,7 +12,7 @@ import kireyis.common.DataID;
 import kireyis.common.EntityID;
 
 public final class Client extends Entity {
-	private int viewDistance = 5;
+	private int viewDistance = Consts.DEFAULT_VIEW;
 
 	private byte horizontalAccel = 0;
 	private byte verticalAccel = 0;
@@ -124,23 +124,23 @@ public final class Client extends Entity {
 		}
 		try {
 			sendingThread.interrupt();
-		} catch (NullPointerException e) {
+		} catch (final NullPointerException e) {
 			// Ignore
 		}
 
 		try {
 			receivingThread.join();
-		} catch (NullPointerException e) {
+		} catch (final NullPointerException e) {
 			// Ignore
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			e.printStackTrace();
 		}
 
 		try {
 			sendingThread.join();
-		} catch (NullPointerException e) {
+		} catch (final NullPointerException e) {
 			// Ignore
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -223,23 +223,23 @@ public final class Client extends Entity {
 	}
 
 	public synchronized void sendEntities(final ArrayList<Entity> entities) {
-		if (entities.isEmpty()) {
+		final ArrayList<Entity> sended = new ArrayList<Entity>();
+
+		for (final Entity entity : entities) {
+			double viewDistance = Client.this.viewDistance + entity.getSize();
+			if (entity.getX() < x + viewDistance && entity.getX() > x - viewDistance && entity.getY() < y + viewDistance
+					&& entity.getY() > y - viewDistance && entity != Client.this) {
+				sended.add(entity);
+			}
+		}
+
+		if (sended.isEmpty()) {
 			return;
 		}
+
 		queue(new Runnable() {
 			@Override
 			public void run() {
-				final ArrayList<Entity> sended = new ArrayList<Entity>();
-
-				for (final Entity entity : entities) {
-					double viewDistance = Client.this.viewDistance + entity.getSize();
-					if (entity.getX() < x + viewDistance && entity.getX() > x - viewDistance
-							&& entity.getY() < y + viewDistance && entity.getY() > y - viewDistance
-							&& entity != Client.this) {
-						sended.add(entity);
-					}
-				}
-
 				try {
 					out.writeByte(DataID.ENTITIES);
 					out.writeInt(sended.size());
@@ -257,6 +257,9 @@ public final class Client extends Entity {
 	}
 
 	public synchronized void sendPos() {
+		final double x = this.x;
+		final double y = this.y;
+
 		queue(new Runnable() {
 			@Override
 			public void run() {

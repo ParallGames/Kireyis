@@ -23,13 +23,7 @@ public class World {
 	}
 
 	public static synchronized ArrayList<RenderEntity> getEntities() {
-		final ArrayList<RenderEntity> returnedEntities = new ArrayList<RenderEntity>();
-
-		for (final RenderEntity entity : entities) {
-			returnedEntities.add(entity);
-		}
-
-		return returnedEntities;
+		return new ArrayList<RenderEntity>(entities);
 	}
 
 	public static synchronized void setEntities(final ArrayList<RenderEntity> newEntities) {
