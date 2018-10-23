@@ -44,11 +44,11 @@ public class GameLoop {
 
 					Window.update();
 
-					long sleep = time - System.nanoTime() + interval;
+					final long sleep = time - System.nanoTime() + interval;
 					if (sleep > 0) {
 						try {
 							Thread.sleep(sleep / 1_000_000L, (int) (sleep % 1_000_000L));
-						} catch (InterruptedException e) {
+						} catch (final InterruptedException e) {
 							e.printStackTrace();
 						}
 					}
@@ -59,8 +59,9 @@ public class GameLoop {
 	}
 
 	public static void stop() {
-		run = false;
 		Window.showConnection(true);
 		Window.showGame(false);
+
+		run = false;
 	}
 }

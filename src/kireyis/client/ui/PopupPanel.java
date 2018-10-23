@@ -7,7 +7,6 @@ import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import kireyis.client.Client;
-import kireyis.client.GameLoop;
 
 public class PopupPanel extends Group {
 	public PopupPanel() {
@@ -19,8 +18,7 @@ public class PopupPanel extends Group {
 		disconnect.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(final ActionEvent e) {
-				GameLoop.stop();
-				Client.close();
+				Client.disconnect();
 			}
 		});
 

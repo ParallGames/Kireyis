@@ -79,7 +79,7 @@ public class Server {
 						}
 					}
 
-					for (Entity e : World.getEntities()) {
+					for (final Entity e : World.getEntities()) {
 						e.tick();
 					}
 
@@ -89,15 +89,15 @@ public class Server {
 						}
 					}
 
-					for (Entity e : World.getEntities()) {
+					for (final Entity e : World.getEntities()) {
 						e.updateMove();
 					}
 
-					long sleep = time - System.nanoTime() + interval;
+					final long sleep = time - System.nanoTime() + interval;
 					if (sleep > 0) {
 						try {
 							Thread.sleep(sleep / 1_000_000L, (int) (sleep % 1_000_000L));
-						} catch (InterruptedException e) {
+						} catch (final InterruptedException e) {
 							e.printStackTrace();
 						}
 					}
@@ -120,7 +120,7 @@ public class Server {
 		try {
 			connectionThread.join();
 			gameLoopThread.join();
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			e.printStackTrace();
 		}
 

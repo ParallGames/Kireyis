@@ -102,7 +102,7 @@ public final class Client extends Entity {
 				while (connected) {
 					try {
 						sendRequests.take().run();
-					} catch (InterruptedException e) {
+					} catch (final InterruptedException e) {
 						return;
 					}
 				}
@@ -145,7 +145,7 @@ public final class Client extends Entity {
 		}
 	}
 
-	private void queue(Runnable runnable) {
+	private void queue(final Runnable runnable) {
 		if (sendRequests.size() > Consts.MAX_QUEUE) {
 			System.err.println(pseudo + "'s connection timed out.");
 			connected = false;
@@ -226,15 +226,11 @@ public final class Client extends Entity {
 		final ArrayList<Entity> sended = new ArrayList<Entity>();
 
 		for (final Entity entity : entities) {
-			double viewDistance = Client.this.viewDistance + entity.getSize();
+			final double viewDistance = Client.this.viewDistance + entity.getSize();
 			if (entity.getX() < x + viewDistance && entity.getX() > x - viewDistance && entity.getY() < y + viewDistance
 					&& entity.getY() > y - viewDistance && entity != Client.this) {
 				sended.add(entity);
 			}
-		}
-
-		if (sended.isEmpty()) {
-			return;
 		}
 
 		queue(new Runnable() {

@@ -53,10 +53,10 @@ public abstract class Entity {
 	public abstract void tick();
 
 	public static void collide(final Entity e1, final Entity e2) {
-		double distX = e1.x - e2.x;
-		double distY = e1.y - e2.y;
+		final double distX = e1.x - e2.x;
+		final double distY = e1.y - e2.y;
 
-		double avgSize = (e1.getSize() + e2.getSize()) / 2;
+		final double avgSize = (e1.getSize() + e2.getSize()) / 2;
 
 		if (distX * distX + distY * distY > avgSize * avgSize) {
 			return;

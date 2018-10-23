@@ -111,7 +111,7 @@ public class Client {
 
 	private static byte currentHorizontalAccel = 0;
 
-	public static synchronized void sendHorizontalAccel(byte accel) {
+	public static synchronized void sendHorizontalAccel(final byte accel) {
 		if (accel == currentHorizontalAccel) {
 			return;
 		}
@@ -127,7 +127,7 @@ public class Client {
 
 	private static byte currentVerticalAccel = 0;
 
-	public static synchronized void sendVerticalAccel(byte accel) {
+	public static synchronized void sendVerticalAccel(final byte accel) {
 		if (accel == currentVerticalAccel) {
 			return;
 		}
@@ -153,10 +153,15 @@ public class Client {
 	public static synchronized void sendClose() {
 		try {
 			out.writeByte(DataID.CLOSE);
-		} catch (NullPointerException e) {
+		} catch (final NullPointerException e) {
 			// Ignore
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			close();
 		}
+	}
+
+	public static synchronized void disconnect() {
+		sendClose();
+		close();
 	}
 }
