@@ -59,6 +59,7 @@ public final class Client extends Entity {
 			}
 
 			sendWorld();
+			sendViewDistance();
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
@@ -265,6 +266,22 @@ public final class Client extends Entity {
 					out.writeDouble(y);
 				} catch (final IOException e) {
 					connected = false;
+				}
+			}
+		});
+	}
+
+	public synchronized void sendViewDistance() {
+		final int viewDistance = this.viewDistance;
+
+		queue(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					out.writeByte(DataID.VIEW_DISTANCE);
+					out.writeInt(viewDistance);
+				} catch (final IOException e) {
+
 				}
 			}
 		});

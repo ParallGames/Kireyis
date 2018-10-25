@@ -9,8 +9,9 @@ import javafx.scene.shape.Rectangle;
 import kireyis.client.Client;
 
 public class PopupPanel extends Group {
+	private final Rectangle background = new Rectangle(1280, 720);
+
 	public PopupPanel() {
-		final Rectangle background = new Rectangle(1280, 720);
 		background.setFill(Color.rgb(0, 0, 0, 0.5));
 		this.getChildren().add(background);
 
@@ -23,5 +24,10 @@ public class PopupPanel extends Group {
 		});
 
 		this.getChildren().add(disconnect);
+	}
+
+	public void update() {
+		background.setHeight(Window.getHeight());
+		background.setWidth(Window.getWidth());
 	}
 }

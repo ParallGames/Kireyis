@@ -52,7 +52,7 @@ public class GamePanel extends Group {
 		final int minY = ((int) camY) - Player.getViewDistance();
 
 		final int viewSize = Player.getViewDistance() * 2 + 1;
-		final double blockSize = (Math.max(Window.getWidth(), Window.getHeight()) / (Player.getViewDistance() * 2d));
+		final double blockSize = Math.max(Window.getWidth(), Window.getHeight()) / (Player.getViewDistance() * 2d);
 
 		final double translateX = -blockSize * (camX - (int) camX)
 				- ((viewSize - 1) * blockSize - Window.getWidth()) / 2;

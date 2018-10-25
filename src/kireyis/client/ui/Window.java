@@ -1,6 +1,8 @@
 package kireyis.client.ui;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
@@ -30,15 +32,26 @@ public class Window extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(true);
 		primaryStage.setTitle("Kireyis");
+
+		final ChangeListener<Number> listener = new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				popupPanel.update();
+			}
+		};
+
+		primaryStage.widthProperty().addListener(listener);
+		primaryStage.heightProperty().addListener(listener);
+
 		primaryStage.show();
 	}
 
-	public static int getHeight() {
-		return (int) scene.getHeight();
+	public static double getHeight() {
+		return scene.getHeight();
 	}
 
-	public static int getWidth() {
-		return (int) scene.getWidth();
+	public static double getWidth() {
+		return scene.getWidth();
 	}
 
 	public static void popupPanel() {
