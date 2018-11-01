@@ -3,11 +3,13 @@ package kireyis.server;
 import kireyis.common.Consts;
 
 public abstract class Entity {
-	protected double x;
-	protected double y;
+	protected double x = 0;
+	protected double y = 0;
 
-	private double speedX;
-	private double speedY;
+	protected double rotation = 0;
+
+	private double speedX = 0;
+	private double speedY = 0;
 
 	public synchronized void updateMove() {
 		x += speedX;
@@ -40,6 +42,14 @@ public abstract class Entity {
 
 	public synchronized double getY() {
 		return y;
+	}
+
+	public synchronized double getRotation() {
+		return rotation;
+	}
+
+	public synchronized void setRotation(final double rotation) {
+		this.rotation = rotation;
 	}
 
 	public abstract double getSize();

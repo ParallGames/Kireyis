@@ -42,6 +42,8 @@ public class GameLoop {
 					}
 					Client.sendVerticalAccel(moveY);
 
+					Client.sendPlayerRotation();
+
 					Window.update();
 
 					final long sleep = time - System.nanoTime() + interval;

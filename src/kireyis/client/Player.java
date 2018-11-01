@@ -5,6 +5,7 @@ import kireyis.common.Consts;
 public class Player {
 	private static double x;
 	private static double y;
+	private static double rotation = 0;
 
 	private static int viewDistance = Consts.DEFAULT_VIEW;
 
@@ -17,6 +18,14 @@ public class Player {
 
 	public static double getY() {
 		return y;
+	}
+
+	public static double getRotation() {
+		return rotation;
+	}
+
+	public static void setRotation(final double rotation) {
+		Player.rotation = rotation;
 	}
 
 	public static double getWidth() {

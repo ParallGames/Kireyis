@@ -52,4 +52,9 @@ public class DataID {
 	/*
 	 * int viewDistance
 	 */
+
+	public static final byte PLAYER_ROTATION = 11;
+	/*
+	 * int angle
+	 */
 }

@@ -79,6 +79,8 @@ public final class Client extends Entity {
 						} else if (dataID == DataID.CLOSE) {
 							connected = false;
 							return;
+						} else if (dataID == DataID.PLAYER_ROTATION) {
+							rotation = in.readDouble();
 						} else {
 							System.err.println("Wrong datatype received from " + pseudo + ".");
 							connected = false;
@@ -244,6 +246,7 @@ public final class Client extends Entity {
 						out.writeByte(entity.getTypeID());
 						out.writeDouble(entity.getX());
 						out.writeDouble(entity.getY());
+						out.writeDouble(entity.getRotation());
 					}
 				} catch (final IOException e) {
 					connected = false;

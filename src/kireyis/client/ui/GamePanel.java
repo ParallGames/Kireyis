@@ -7,18 +7,35 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
 import kireyis.client.Client;
 import kireyis.client.Player;
 import kireyis.client.RenderEntity;
 import kireyis.client.World;
+import kireyis.client.textures.Textures;
 import kireyis.common.BlockID;
 import kireyis.common.EntityID;
 
 public class GamePanel extends Group {
 	private final GraphicsContext gc;
 	private final Canvas canvas;
+
+	private void rotate(final double angle, final double x, final double y) {
+		final Rotate r = new Rotate(angle, x, y);
+		gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
+	}
+
+	private void drawRotatedImage(final Image image, final double angle, final double x, final double y,
+			final double width, final double height) {
+		gc.save();
+		rotate(angle, x + width / 2, y + height / 2);
+		gc.drawImage(image, x, y, width, height);
+		gc.restore();
+	}
 
 	public GamePanel() {
 		canvas = new Canvas();
@@ -37,6 +54,21 @@ public class GamePanel extends Group {
 				Client.sendViewDistance();
 			}
 		});
+
+		final EventHandler<MouseEvent> mouseMove = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(final MouseEvent e) {
+				final double x = e.getX() - canvas.getWidth() / 2;
+				final double y = e.getY() - canvas.getHeight() / 2;
+
+				final double angle = Math.atan2(y, x);
+
+				Player.setRotation(angle / Math.PI * 180 + 90);
+			}
+		};
+
+		canvas.setOnMouseMoved(mouseMove);
+		canvas.setOnMouseDragged(mouseMove);
 	}
 
 	public void update() {
@@ -83,21 +115,26 @@ public class GamePanel extends Group {
 				}
 
 				for (final RenderEntity entity : entities) {
-					final double x = (entity.getX() - camX) * blockSize + Window.getWidth() / 2;
-					final double y = (entity.getY() - camY) * blockSize + Window.getHeight() / 2;
+					final double x = (entity.x - camX) * blockSize + Window.getWidth() / 2;
+					final double y = (entity.y - camY) * blockSize + Window.getHeight() / 2;
 
-					if (entity.getTypeid() == EntityID.PLAYER) {
-						gc.setFill(Color.PURPLE);
+					Image entityTexture = null;
+
+					if (entity.typeid == EntityID.PLAYER) {
+						entityTexture = Textures.getPlayerTexture();
+					} else {
+						throw new RuntimeException("Unknown entity");
 					}
 
-					gc.fillOval(x, y, Player.getWidth() * blockSize, Player.getHeight() * blockSize);
+					drawRotatedImage(entityTexture, entity.rotation, x, y, Player.getWidth() * blockSize,
+							Player.getHeight() * blockSize);
 				}
 
 				final double x = (playerX - camX) * blockSize + Window.getWidth() / 2;
 				final double y = (playerY - camY) * blockSize + Window.getHeight() / 2;
 
-				gc.setFill(Color.BROWN);
-				gc.fillOval(x, y, Player.getWidth() * blockSize, Player.getHeight() * blockSize);
+				drawRotatedImage(Textures.getPlayerTexture(), Player.getRotation(), x, y, Player.getWidth() * blockSize,
+						Player.getHeight() * blockSize);
 			}
 		});
 	}

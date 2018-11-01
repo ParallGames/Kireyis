@@ -85,7 +85,8 @@ public class Client {
 								final byte id = in.readByte();
 								final double x = in.readDouble();
 								final double y = in.readDouble();
-								entities.add(new RenderEntity(id, x, y));
+								final double rotation = in.readDouble();
+								entities.add(new RenderEntity(id, x, y, rotation));
 							}
 							World.setEntities(entities);
 						} else if (dataID == DataID.PLAYER_POS) {
@@ -145,6 +146,15 @@ public class Client {
 		try {
 			out.writeByte(DataID.VIEW_DISTANCE);
 			out.writeInt(Player.getViewDistance());
+		} catch (final IOException e) {
+			close();
+		}
+	}
+
+	public static synchronized void sendPlayerRotation() {
+		try {
+			out.writeByte(DataID.PLAYER_ROTATION);
+			out.writeDouble(Player.getRotation());
 		} catch (final IOException e) {
 			close();
 		}

@@ -1,26 +1,16 @@
 package kireyis.client;
 
 public class RenderEntity {
-	private final double x;
-	private final double y;
+	public final double x;
+	public final double y;
+	public final double rotation;
 
-	private final byte typeid;
+	public final byte typeid;
 
-	public RenderEntity(final byte typeid, final double x, final double y) {
+	public RenderEntity(final byte typeid, final double x, final double y, final double rotation) {
 		this.x = x;
 		this.y = y;
+		this.rotation = rotation;
 		this.typeid = typeid;
-	}
-
-	public double getX() {
-		return x;
-	}
-
-	public double getY() {
-		return y;
-	}
-
-	public int getTypeid() {
-		return typeid;
 	}
 }
