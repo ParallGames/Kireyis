@@ -40,6 +40,10 @@ public class Player {
 		return viewDistance;
 	}
 
+	public static void setViewDistance(int dist) {
+		viewDistance = dist;
+	}
+
 	public static void increaseViewDistance() {
 		viewDistance++;
 

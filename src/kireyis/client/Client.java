@@ -91,6 +91,8 @@ public class Client {
 							World.setEntities(entities);
 						} else if (dataID == DataID.PLAYER_POS) {
 							Player.setPos(in.readDouble(), in.readDouble());
+						} else if (dataID == DataID.VIEW_DISTANCE) {
+							Player.setViewDistance(in.readInt());
 						} else {
 							close();
 							throw new RuntimeException("Unknown data type");
