@@ -35,7 +35,8 @@ public class Window extends Application {
 
 		final ChangeListener<Number> listener = new ChangeListener<Number>() {
 			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+			public void changed(final ObservableValue<? extends Number> observable, final Number oldValue,
+					final Number newValue) {
 				popupPanel.update();
 			}
 		};

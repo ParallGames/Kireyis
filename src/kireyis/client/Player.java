@@ -40,7 +40,7 @@ public class Player {
 		return viewDistance;
 	}
 
-	public static void setViewDistance(int dist) {
+	public static void setViewDistance(final int dist) {
 		viewDistance = dist;
 	}
 

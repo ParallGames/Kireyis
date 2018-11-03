@@ -63,12 +63,19 @@ public class GamePanel extends Group {
 
 				final double angle = Math.atan2(y, x);
 
-				Player.setRotation(angle / Math.PI * 180 + 90);
+				Player.setRotation(angle + Math.PI / 2);
 			}
 		};
 
 		canvas.setOnMouseMoved(mouseMove);
 		canvas.setOnMouseDragged(mouseMove);
+
+		canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(final MouseEvent e) {
+				Client.sendPlayerThrowArrow();
+			}
+		});
 	}
 
 	public void update() {
@@ -122,19 +129,21 @@ public class GamePanel extends Group {
 
 					if (entity.typeid == EntityID.PLAYER) {
 						entityTexture = Textures.getPlayerTexture();
+					} else if (entity.typeid == EntityID.ARROW) {
+						entityTexture = Textures.getArrowTexture();
 					} else {
 						throw new RuntimeException("Unknown entity");
 					}
 
-					drawRotatedImage(entityTexture, entity.rotation, x, y, Player.getWidth() * blockSize,
-							Player.getHeight() * blockSize);
+					drawRotatedImage(entityTexture, entity.rotation * 180 / Math.PI, x, y,
+							Player.getWidth() * blockSize, Player.getHeight() * blockSize);
 				}
 
 				final double x = (playerX - camX) * blockSize + Window.getWidth() / 2;
 				final double y = (playerY - camY) * blockSize + Window.getHeight() / 2;
 
-				drawRotatedImage(Textures.getPlayerTexture(), Player.getRotation(), x, y, Player.getWidth() * blockSize,
-						Player.getHeight() * blockSize);
+				drawRotatedImage(Textures.getPlayerTexture(), Player.getRotation() * 180 / Math.PI, x, y,
+						Player.getWidth() * blockSize, Player.getHeight() * blockSize);
 			}
 		});
 	}

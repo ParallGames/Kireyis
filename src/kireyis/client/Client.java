@@ -162,6 +162,17 @@ public class Client {
 		}
 	}
 
+	public static synchronized void sendPlayerThrowArrow() {
+		try {
+			out.writeByte(DataID.THROW_ARROW);
+			out.writeDouble(Player.getX());
+			out.writeDouble(Player.getY());
+			out.writeDouble(Player.getRotation());
+		} catch (final IOException e) {
+			close();
+		}
+	}
+
 	public static synchronized void sendClose() {
 		try {
 			out.writeByte(DataID.CLOSE);

@@ -10,6 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import kireyis.common.Consts;
 import kireyis.common.DataID;
 import kireyis.common.EntityID;
+import kireyis.server.entities.Arrow;
 
 public final class Client extends Entity {
 	private int viewDistance = Consts.DEFAULT_VIEW;
@@ -82,6 +83,8 @@ public final class Client extends Entity {
 							return;
 						} else if (dataID == DataID.PLAYER_ROTATION) {
 							rotation = in.readDouble();
+						} else if (dataID == DataID.THROW_ARROW) {
+							World.getEntities().add(new Arrow(in.readDouble(), in.readDouble(), in.readDouble()));
 						} else {
 							System.err.println("Wrong datatype received from " + pseudo + ".");
 							connected = false;
@@ -305,7 +308,6 @@ public final class Client extends Entity {
 		return 0.9;
 	}
 
-	@Override
 	public double getAcceleration() {
 		return 0.002;
 	}
@@ -331,5 +333,10 @@ public final class Client extends Entity {
 		}
 
 		this.accelerate(accelX, accelY);
+	}
+
+	@Override
+	public boolean isDead() {
+		return !connected;
 	}
 }

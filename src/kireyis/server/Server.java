@@ -70,7 +70,6 @@ public class Server {
 						} else {
 							client.close();
 							clients.remove(client);
-							World.getEntities().remove(client);
 
 							for (final Client receiver : clients) {
 								receiver.sendDisconnection(client.getPseudo());
@@ -91,6 +90,14 @@ public class Server {
 
 					for (final Entity e : World.getEntities()) {
 						e.updateMove();
+					}
+
+					for (int n = World.getEntities().size() - 1; n >= 0; n--) {
+						final Entity e = World.getEntities().get(n);
+
+						if (e.isDead()) {
+							World.getEntities().remove(e);
+						}
 					}
 
 					final long sleep = time - System.nanoTime() + interval;

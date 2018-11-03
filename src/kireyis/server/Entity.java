@@ -1,6 +1,7 @@
 package kireyis.server;
 
 import kireyis.common.Consts;
+import kireyis.common.EntityID;
 
 public abstract class Entity {
 	protected double x = 0;
@@ -8,8 +9,8 @@ public abstract class Entity {
 
 	protected double rotation = 0;
 
-	private double speedX = 0;
-	private double speedY = 0;
+	protected double speedX = 0;
+	protected double speedY = 0;
 
 	public synchronized void updateMove() {
 		x += speedX;
@@ -58,11 +59,17 @@ public abstract class Entity {
 
 	public abstract double getFriction();
 
-	public abstract double getAcceleration();
+	public void tick() {
 
-	public abstract void tick();
+	}
+
+	public abstract boolean isDead();
 
 	public static void collide(final Entity e1, final Entity e2) {
+		if (e1.getTypeID() == EntityID.ARROW || e2.getTypeID() == EntityID.ARROW) {
+			return;
+		}
+
 		final double distX = e1.x - e2.x;
 		final double distY = e1.y - e2.y;
 

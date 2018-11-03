@@ -55,6 +55,11 @@ public class DataID {
 
 	public static final byte PLAYER_ROTATION = 11;
 	/*
-	 * int angle
+	 * double angle
+	 */
+
+	public static final byte THROW_ARROW = 12;
+	/*
+	 * double x double y double angle
 	 */
 }
