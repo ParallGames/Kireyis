@@ -13,12 +13,16 @@ public class Key extends Group {
 	private static final KeyCode LEFT = KeyCode.A;
 	private static final KeyCode RIGHT = KeyCode.D;
 
+	private static final KeyCode FULL_SCREEN = KeyCode.F11;
+
 	private static boolean quitDown = false;
 
 	private static boolean upDown = false;
 	private static boolean downDown = false;
 	private static boolean leftDown = false;
 	private static boolean rightDown = false;
+
+	private static boolean fullScreenDown = false;
 
 	public Key() {
 		this.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -39,6 +43,11 @@ public class Key extends Group {
 					leftDown = true;
 				} else if (code == RIGHT) {
 					rightDown = true;
+				} else if (code == FULL_SCREEN) {
+					if (!fullScreenDown) {
+						Window.switchFullScreen();
+						fullScreenDown = true;
+					}
 				}
 			}
 		});
@@ -58,6 +67,8 @@ public class Key extends Group {
 					leftDown = false;
 				} else if (code == RIGHT) {
 					rightDown = false;
+				} else if (code == FULL_SCREEN) {
+					fullScreenDown = false;
 				}
 			}
 		});
