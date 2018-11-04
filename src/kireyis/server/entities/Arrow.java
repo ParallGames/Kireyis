@@ -2,20 +2,20 @@ package kireyis.server.entities;
 
 import kireyis.common.Consts;
 import kireyis.common.EntityID;
-import kireyis.server.Entity;
 
 public class Arrow extends Entity {
 	private int age = 0;
 
 	private boolean alive = true;
 
-	public Arrow(final double x, final double y, final double rotation) {
+	public Arrow(final double x, final double y, final double rotation, final double throwerSpeedX,
+			final double throwerSpeedY) {
 		this.x = x;
 		this.y = y;
 		this.rotation = rotation;
 
-		this.speedX = Math.cos(rotation - Math.PI / 2) * 0.05;
-		this.speedY = Math.sin(rotation - Math.PI / 2) * 0.05;
+		this.speedX = throwerSpeedX + Math.cos(rotation - Math.PI / 2) * 0.05;
+		this.speedY = throwerSpeedY + Math.sin(rotation - Math.PI / 2) * 0.05;
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class Arrow extends Entity {
 	public void tick() {
 		age++;
 
-		if (age > 400) {
+		if (age > 200) {
 			alive = false;
 		}
 

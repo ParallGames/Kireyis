@@ -1,4 +1,4 @@
-package kireyis.server;
+package kireyis.server.entities;
 
 import kireyis.common.Consts;
 import kireyis.common.EntityID;
@@ -11,6 +11,8 @@ public abstract class Entity {
 
 	protected double speedX = 0;
 	protected double speedY = 0;
+
+	protected boolean alive = true;
 
 	public synchronized void updateMove() {
 		x += speedX;
@@ -45,6 +47,14 @@ public abstract class Entity {
 		return y;
 	}
 
+	public synchronized double getSpeedX() {
+		return speedX;
+	}
+
+	public synchronized double getSpeedY() {
+		return speedY;
+	}
+
 	public synchronized double getRotation() {
 		return rotation;
 	}
@@ -63,7 +73,13 @@ public abstract class Entity {
 
 	}
 
-	public abstract boolean isDead();
+	public void setAlive(final boolean alive) {
+		this.alive = alive;
+	}
+
+	public boolean isDead() {
+		return !alive;
+	}
 
 	public static void collide(final Entity e1, final Entity e2) {
 		if (e1.getTypeID() == EntityID.ARROW || e2.getTypeID() == EntityID.ARROW) {

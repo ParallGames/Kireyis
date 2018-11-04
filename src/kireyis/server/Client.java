@@ -9,14 +9,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import kireyis.common.Consts;
 import kireyis.common.DataID;
-import kireyis.common.EntityID;
 import kireyis.server.entities.Arrow;
+import kireyis.server.entities.Entity;
+import kireyis.server.entities.Player;
 
-public final class Client extends Entity {
+public final class Client {
 	private int viewDistance = Consts.DEFAULT_VIEW;
-
-	private byte horizontalAccel = 0;
-	private byte verticalAccel = 0;
 
 	private final Socket socket;
 	private DataInputStream in;
@@ -31,9 +29,10 @@ public final class Client extends Entity {
 	private Thread receivingThread;
 	private Thread sendingThread;
 
+	private Player player;
+
 	public Client(final Socket socket) {
-		x = 5;
-		y = 5;
+		player = new Player(5, 5);
 
 		this.socket = socket;
 
@@ -73,18 +72,19 @@ public final class Client extends Entity {
 					try {
 						final byte dataID = in.readByte();
 						if (dataID == DataID.HORIZONTAL_ACCEL) {
-							horizontalAccel = in.readByte();
+							player.setHorizontalAccel(in.readByte());
 						} else if (dataID == DataID.VERTICAL_ACCEL) {
-							verticalAccel = in.readByte();
+							player.setVerticalAccel(in.readByte());
 						} else if (dataID == DataID.VIEW_DISTANCE) {
 							viewDistance = in.readInt();
 						} else if (dataID == DataID.CLOSE) {
 							connected = false;
 							return;
 						} else if (dataID == DataID.PLAYER_ROTATION) {
-							rotation = in.readDouble();
+							player.setRotation(in.readDouble());
 						} else if (dataID == DataID.THROW_ARROW) {
-							World.getEntities().add(new Arrow(in.readDouble(), in.readDouble(), in.readDouble()));
+							World.getEntities().add(new Arrow(player.getX(), player.getY(), in.readDouble(),
+									player.getSpeedX(), player.getSpeedY()));
 						} else {
 							System.err.println("Wrong datatype received from " + pseudo + ".");
 							connected = false;
@@ -122,6 +122,7 @@ public final class Client extends Entity {
 
 	public void close() {
 		connected = false;
+		player.setAlive(false);
 
 		try {
 			socket.close();
@@ -162,6 +163,10 @@ public final class Client extends Entity {
 
 	public String getPseudo() {
 		return pseudo;
+	}
+
+	public Player getPlayer() {
+		return player;
 	}
 
 	public boolean isConnected() {
@@ -233,8 +238,9 @@ public final class Client extends Entity {
 
 		for (final Entity entity : entities) {
 			final double viewDistance = Client.this.viewDistance + entity.getSize();
-			if (entity.getX() < x + viewDistance && entity.getX() > x - viewDistance && entity.getY() < y + viewDistance
-					&& entity.getY() > y - viewDistance && entity != Client.this) {
+			if (entity.getX() < player.getX() + viewDistance && entity.getX() > player.getX() - viewDistance
+					&& entity.getY() < player.getY() + viewDistance && entity.getY() > player.getY() - viewDistance
+					&& entity != player) {
 				sended.add(entity);
 			}
 		}
@@ -260,8 +266,8 @@ public final class Client extends Entity {
 	}
 
 	public synchronized void sendPos() {
-		final double x = this.x;
-		final double y = this.y;
+		final double x = player.getX();
+		final double y = player.getY();
 
 		queue(new Runnable() {
 			@Override
@@ -291,52 +297,5 @@ public final class Client extends Entity {
 				}
 			}
 		});
-	}
-
-	@Override
-	public int getTypeID() {
-		return EntityID.PLAYER;
-	}
-
-	@Override
-	public double getSize() {
-		return 0.5;
-	}
-
-	@Override
-	public double getFriction() {
-		return 0.9;
-	}
-
-	public double getAcceleration() {
-		return 0.002;
-	}
-
-	@Override
-	public void tick() {
-		double accelX;
-		if (horizontalAccel == 1) {
-			accelX = getAcceleration();
-		} else if (horizontalAccel == -1) {
-			accelX = -getAcceleration();
-		} else {
-			accelX = 0;
-		}
-
-		double accelY;
-		if (verticalAccel == 1) {
-			accelY = getAcceleration();
-		} else if (verticalAccel == -1) {
-			accelY = -getAcceleration();
-		} else {
-			accelY = 0;
-		}
-
-		this.accelerate(accelX, accelY);
-	}
-
-	@Override
-	public boolean isDead() {
-		return !connected;
 	}
 }

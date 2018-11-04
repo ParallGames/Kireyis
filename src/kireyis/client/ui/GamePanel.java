@@ -70,7 +70,7 @@ public class GamePanel extends Group {
 		canvas.setOnMouseMoved(mouseMove);
 		canvas.setOnMouseDragged(mouseMove);
 
-		canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(final MouseEvent e) {
 				Client.sendPlayerThrowArrow();

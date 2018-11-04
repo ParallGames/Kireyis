@@ -60,6 +60,6 @@ public class DataID {
 
 	public static final byte THROW_ARROW = 12;
 	/*
-	 * double x double y double angle
+	 * double angle
 	 */
 }

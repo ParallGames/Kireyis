@@ -6,6 +6,7 @@ import java.net.SocketException;
 import java.util.Vector;
 
 import kireyis.common.Consts;
+import kireyis.server.entities.Entity;
 
 public class Server {
 	private static final int tps = 100;
@@ -42,7 +43,7 @@ public class Server {
 							}
 
 							clients.add(client);
-							World.getEntities().add(client);
+							World.getEntities().add(client.getPlayer());
 						} else {
 							client.close();
 						}
