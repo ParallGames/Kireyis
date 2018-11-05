@@ -6,7 +6,6 @@ import java.net.SocketException;
 import java.util.Vector;
 
 import kireyis.common.Consts;
-import kireyis.server.entities.Entity;
 
 public class Server {
 	private static final int tps = 100;
@@ -43,7 +42,7 @@ public class Server {
 							}
 
 							clients.add(client);
-							World.getEntities().add(client.getPlayer());
+							World.addEntity(client.getPlayer());
 						} else {
 							client.close();
 						}
@@ -66,7 +65,7 @@ public class Server {
 					for (int n = clients.size() - 1; n >= 0; n--) {
 						final Client client = clients.get(n);
 						if (client.isConnected()) {
-							client.sendEntities(World.getEntities());
+							client.sendEntities(World.getVisibleEntities(client));
 							client.sendPos();
 						} else {
 							client.close();
@@ -79,27 +78,7 @@ public class Server {
 						}
 					}
 
-					for (final Entity e : World.getEntities()) {
-						e.tick();
-					}
-
-					for (int a = 0; a < World.getEntities().size(); a++) {
-						for (int b = a + 1; b < World.getEntities().size(); b++) {
-							Entity.collide(World.getEntities().get(a), World.getEntities().get(b));
-						}
-					}
-
-					for (final Entity e : World.getEntities()) {
-						e.updateMove();
-					}
-
-					for (int n = World.getEntities().size() - 1; n >= 0; n--) {
-						final Entity e = World.getEntities().get(n);
-
-						if (e.isDead()) {
-							World.getEntities().remove(e);
-						}
-					}
+					World.tickEntities();
 
 					final long sleep = time - System.nanoTime() + interval;
 					if (sleep > 0) {

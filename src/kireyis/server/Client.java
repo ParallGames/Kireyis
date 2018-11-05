@@ -83,8 +83,8 @@ public final class Client {
 						} else if (dataID == DataID.PLAYER_ROTATION) {
 							player.setRotation(in.readDouble());
 						} else if (dataID == DataID.THROW_ARROW) {
-							World.getEntities().add(new Arrow(player.getX(), player.getY(), in.readDouble(),
-									player.getSpeedX(), player.getSpeedY()));
+							World.addEntity(new Arrow(player.getX(), player.getY(), in.readDouble(), player.getSpeedX(),
+									player.getSpeedY()));
 						} else {
 							System.err.println("Wrong datatype received from " + pseudo + ".");
 							connected = false;
@@ -169,6 +169,10 @@ public final class Client {
 		return player;
 	}
 
+	public int getViewDistance() {
+		return viewDistance;
+	}
+
 	public boolean isConnected() {
 		return connected;
 	}
@@ -234,25 +238,14 @@ public final class Client {
 	}
 
 	public synchronized void sendEntities(final ArrayList<Entity> entities) {
-		final ArrayList<Entity> sended = new ArrayList<Entity>();
-
-		for (final Entity entity : entities) {
-			final double viewDistance = Client.this.viewDistance + entity.getSize();
-			if (entity.getX() < player.getX() + viewDistance && entity.getX() > player.getX() - viewDistance
-					&& entity.getY() < player.getY() + viewDistance && entity.getY() > player.getY() - viewDistance
-					&& entity != player) {
-				sended.add(entity);
-			}
-		}
-
 		queue(new Runnable() {
 			@Override
 			public void run() {
 				try {
 					out.writeByte(DataID.ENTITIES);
-					out.writeInt(sended.size());
+					out.writeInt(entities.size());
 
-					for (final Entity entity : sended) {
+					for (final Entity entity : entities) {
 						out.writeByte(entity.getTypeID());
 						out.writeDouble(entity.getX());
 						out.writeDouble(entity.getY());
