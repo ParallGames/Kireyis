@@ -18,7 +18,7 @@ import kireyis.client.RenderEntity;
 import kireyis.client.World;
 import kireyis.client.textures.Textures;
 import kireyis.common.BlockID;
-import kireyis.common.EntityID;
+import kireyis.common.entityModels.EntityModels;
 
 public class GamePanel extends Group {
 	private final GraphicsContext gc;
@@ -79,8 +79,10 @@ public class GamePanel extends Group {
 	}
 
 	public void update() {
-		final double camX = Player.getX() + Player.getWidth() / 2d;
-		final double camY = Player.getY() + Player.getHeight() / 2d;
+		final double playerSize = EntityModels.PLAYER.getSize();
+
+		final double camX = Player.getX() + playerSize / 2d;
+		final double camY = Player.getY() + playerSize / 2d;
 
 		final double playerX = Player.getX();
 		final double playerY = Player.getY();
@@ -125,25 +127,29 @@ public class GamePanel extends Group {
 					final double x = (entity.x - camX) * blockSize + Window.getWidth() / 2;
 					final double y = (entity.y - camY) * blockSize + Window.getHeight() / 2;
 
+					double size;
+
 					Image entityTexture = null;
 
-					if (entity.typeid == EntityID.PLAYER) {
+					if (entity.typeid == EntityModels.PLAYER.getID()) {
 						entityTexture = Textures.getPlayerTexture();
-					} else if (entity.typeid == EntityID.ARROW) {
+						size = EntityModels.PLAYER.getSize();
+					} else if (entity.typeid == EntityModels.ARROW.getID()) {
 						entityTexture = Textures.getArrowTexture();
+						size = EntityModels.ARROW.getSize();
 					} else {
 						throw new RuntimeException("Unknown entity");
 					}
 
-					drawRotatedImage(entityTexture, entity.rotation * 180 / Math.PI, x, y,
-							Player.getWidth() * blockSize, Player.getHeight() * blockSize);
+					drawRotatedImage(entityTexture, entity.rotation * 180 / Math.PI, x, y, size * blockSize,
+							size * blockSize);
 				}
 
 				final double x = (playerX - camX) * blockSize + Window.getWidth() / 2;
 				final double y = (playerY - camY) * blockSize + Window.getHeight() / 2;
 
 				drawRotatedImage(Textures.getPlayerTexture(), Player.getRotation() * 180 / Math.PI, x, y,
-						Player.getWidth() * blockSize, Player.getHeight() * blockSize);
+						playerSize * blockSize, playerSize * blockSize);
 			}
 		});
 	}

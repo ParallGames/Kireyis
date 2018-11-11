@@ -9,9 +9,6 @@ public class Player {
 
 	private static int viewDistance = Consts.DEFAULT_VIEW;
 
-	private static final double WIDTH = 0.5;
-	private static final double HEIGHT = 0.5;
-
 	public static double getX() {
 		return x;
 	}
@@ -26,14 +23,6 @@ public class Player {
 
 	public static void setRotation(final double rotation) {
 		Player.rotation = rotation;
-	}
-
-	public static double getWidth() {
-		return WIDTH;
-	}
-
-	public static double getHeight() {
-		return HEIGHT;
 	}
 
 	public static int getViewDistance() {

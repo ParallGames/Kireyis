@@ -1,7 +1,7 @@
 package kireyis.server.entities;
 
 import kireyis.common.Consts;
-import kireyis.common.EntityID;
+import kireyis.common.entityModels.EntityModels;
 
 public abstract class Entity {
 	protected double x = 0;
@@ -82,7 +82,7 @@ public abstract class Entity {
 	}
 
 	public static void collide(final Entity e1, final Entity e2) {
-		if (e1.getTypeID() == EntityID.ARROW || e2.getTypeID() == EntityID.ARROW) {
+		if (e1.getTypeID() == EntityModels.ARROW.getID() || e2.getTypeID() == EntityModels.ARROW.getID()) {
 			return;
 		}
 

@@ -1,6 +1,6 @@
 package kireyis.server.entities;
 
-import kireyis.common.EntityID;
+import kireyis.common.entityModels.EntityModels;
 
 public class Player extends Entity {
 	private static final double ACCELERATION = 0.002;
@@ -24,7 +24,7 @@ public class Player extends Entity {
 
 	@Override
 	public int getTypeID() {
-		return EntityID.PLAYER;
+		return EntityModels.PLAYER.getID();
 	}
 
 	@Override

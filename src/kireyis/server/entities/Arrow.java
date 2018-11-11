@@ -1,7 +1,7 @@
 package kireyis.server.entities;
 
 import kireyis.common.Consts;
-import kireyis.common.EntityID;
+import kireyis.common.entityModels.EntityModels;
 
 public class Arrow extends Entity {
 	private int age = 0;
@@ -25,7 +25,7 @@ public class Arrow extends Entity {
 
 	@Override
 	public int getTypeID() {
-		return EntityID.ARROW;
+		return EntityModels.ARROW.getID();
 	}
 
 	@Override

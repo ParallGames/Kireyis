@@ -9,6 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import kireyis.common.Consts;
 import kireyis.common.DataID;
+import kireyis.common.entityModels.EntityModels;
 import kireyis.server.entities.Arrow;
 import kireyis.server.entities.Entity;
 import kireyis.server.entities.Player;
@@ -83,8 +84,9 @@ public final class Client {
 						} else if (dataID == DataID.PLAYER_ROTATION) {
 							player.setRotation(in.readDouble());
 						} else if (dataID == DataID.THROW_ARROW) {
-							World.addEntity(new Arrow(player.getX(), player.getY(), in.readDouble(), player.getSpeedX(),
-									player.getSpeedY()));
+							final double arrowSize = EntityModels.ARROW.getSize() / 2;
+							World.addEntity(new Arrow(player.getX() + arrowSize, player.getY() + arrowSize,
+									in.readDouble(), player.getSpeedX(), player.getSpeedY()));
 						} else {
 							System.err.println("Wrong datatype received from " + pseudo + ".");
 							connected = false;

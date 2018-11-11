@@ -24,7 +24,7 @@ public class World {
 		return world[x][y];
 	}
 
-	public static synchronized ArrayList<Entity> getVisibleEntities(Client client) {
+	public static synchronized ArrayList<Entity> getVisibleEntities(final Client client) {
 		final Player player = client.getPlayer();
 
 		final ArrayList<Entity> visibles = new ArrayList<Entity>();
@@ -41,7 +41,7 @@ public class World {
 		return visibles;
 	}
 
-	public static synchronized void addEntity(Entity e) {
+	public static synchronized void addEntity(final Entity e) {
 		entities.add(e);
 	}
 
