@@ -9,8 +9,8 @@ public class Textures {
 	private static Image arrowTexture;
 
 	public static void loadTextures() {
-		playerTexture = new Image(Textures.class.getResourceAsStream(TEXTURES_PATH + "player.png"));
-		arrowTexture = new Image(Textures.class.getResourceAsStream(TEXTURES_PATH + "arrow.png"));
+		playerTexture = new Image(Textures.class.getResourceAsStream(TEXTURES_PATH + "player.png"), 64, 64, true, true);
+		arrowTexture = new Image(Textures.class.getResourceAsStream(TEXTURES_PATH + "arrow.png"), 64, 64, true, true);
 	}
 
 	public static Image getPlayerTexture() {

@@ -1,6 +1,7 @@
 package kireyis.server;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import kireyis.common.BlockID;
 import kireyis.common.Consts;
@@ -8,9 +9,9 @@ import kireyis.server.entities.Entity;
 import kireyis.server.entities.Player;
 
 public class World {
-	private static final ArrayList<Entity> entities = new ArrayList<Entity>();
+	private static final ArrayList<Entity> entities = new ArrayList<>();
 
-	private static final byte world[][] = new byte[Consts.WORLD_SIZE][Consts.WORLD_SIZE];
+	private static final byte[][] world = new byte[Consts.WORLD_SIZE][Consts.WORLD_SIZE];
 
 	static {
 		for (int x = 0; x < world.length; x++) {
@@ -24,10 +25,10 @@ public class World {
 		return world[x][y];
 	}
 
-	public static synchronized ArrayList<Entity> getVisibleEntities(final Client client) {
+	public static synchronized List<Entity> getVisibleEntities(final Client client) {
 		final Player player = client.getPlayer();
 
-		final ArrayList<Entity> visibles = new ArrayList<Entity>();
+		final ArrayList<Entity> visibles = new ArrayList<>();
 
 		for (final Entity entity : entities) {
 			final double viewDistance = client.getViewDistance() + entity.getSize();

@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import kireyis.common.Consts;
@@ -25,7 +25,7 @@ public final class Client {
 
 	private boolean connected = false;
 
-	private final LinkedBlockingQueue<Runnable> sendRequests = new LinkedBlockingQueue<Runnable>();
+	private final LinkedBlockingQueue<Runnable> sendRequests = new LinkedBlockingQueue<>();
 
 	private Thread receivingThread;
 	private Thread sendingThread;
@@ -43,16 +43,7 @@ public final class Client {
 
 			pseudo = in.readUTF();
 
-			boolean pseudoUsed = false;
-
-			for (final Client client : Server.clients) {
-				if (client.getPseudo().equalsIgnoreCase(pseudo)) {
-					pseudoUsed = true;
-					break;
-				}
-			}
-
-			if (pseudo.isEmpty() || pseudoUsed) {
+			if (pseudo.isEmpty() || Server.isPseudoUsed(pseudo)) {
 				out.writeBoolean(false);
 				return;
 			} else {
@@ -239,7 +230,7 @@ public final class Client {
 		});
 	}
 
-	public synchronized void sendEntities(final ArrayList<Entity> entities) {
+	public synchronized void sendEntities(final List<Entity> entities) {
 		queue(new Runnable() {
 			@Override
 			public void run() {
@@ -288,7 +279,7 @@ public final class Client {
 					out.writeByte(DataID.VIEW_DISTANCE);
 					out.writeInt(viewDistance);
 				} catch (final IOException e) {
-
+					connected = false;
 				}
 			}
 		});

@@ -4,8 +4,8 @@ import kireyis.client.ui.Key;
 import kireyis.client.ui.Window;
 
 public class GameLoop {
-	private static final int fps = 100;
-	private static final long interval = 1_000_000_000L / fps;
+	private static final int FPS = 100;
+	private static final long INTERVAL = 1_000_000_000L / FPS;
 	private static long time = System.nanoTime();
 
 	private static boolean run = false;
@@ -46,7 +46,7 @@ public class GameLoop {
 
 					Window.update();
 
-					final long sleep = time - System.nanoTime() + interval;
+					final long sleep = time - System.nanoTime() + INTERVAL;
 					if (sleep > 0) {
 						try {
 							Thread.sleep(sleep / 1_000_000L, (int) (sleep % 1_000_000L));

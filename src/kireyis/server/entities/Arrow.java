@@ -6,8 +6,6 @@ import kireyis.common.entityModels.EntityModels;
 public class Arrow extends Entity {
 	private int age = 0;
 
-	private boolean alive = true;
-
 	public Arrow(final double x, final double y, final double rotation, final double throwerSpeedX,
 			final double throwerSpeedY) {
 		this.x = x;
@@ -41,15 +39,7 @@ public class Arrow extends Entity {
 			alive = false;
 		}
 
-		if (x <= 0) {
-			alive = false;
-		} else if (x + this.getSize() >= Consts.WORLD_SIZE) {
-			alive = false;
-		}
-
-		if (y <= 0) {
-			alive = false;
-		} else if (y + this.getSize() >= Consts.WORLD_SIZE) {
+		if (x <= 0 || x + this.getSize() >= Consts.WORLD_SIZE || y <= 0 || y + this.getSize() >= Consts.WORLD_SIZE) {
 			alive = false;
 		}
 	}

@@ -3,16 +3,16 @@ package kireyis.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketException;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import kireyis.common.Consts;
 
 public class Server {
-	private static final int tps = 100;
-	private static final long interval = 1_000_000_000L / tps;
+	private static final int TPS = 100;
+	private static final long INTERVAL = 1_000_000_000L / TPS;
 	private static long time = System.nanoTime();
 
-	public static final Vector<Client> clients = new Vector<Client>();
+	private static final ArrayList<Client> clients = new ArrayList<>();
 
 	private static ServerSocket socket = null;
 
@@ -20,7 +20,6 @@ public class Server {
 	private static Thread gameLoopThread;
 
 	public static void start() {
-
 		try {
 			socket = new ServerSocket(Consts.PORT);
 		} catch (final IOException e) {
@@ -80,7 +79,7 @@ public class Server {
 
 					World.tickEntities();
 
-					final long sleep = time - System.nanoTime() + interval;
+					final long sleep = time - System.nanoTime() + INTERVAL;
 					if (sleep > 0) {
 						try {
 							Thread.sleep(sleep / 1_000_000L, (int) (sleep % 1_000_000L));
@@ -118,5 +117,14 @@ public class Server {
 		clients.clear();
 
 		System.out.println("Server closed");
+	}
+
+	public static boolean isPseudoUsed(final String pseudo) {
+		for (final Client client : Server.clients) {
+			if (client.getPseudo().equalsIgnoreCase(pseudo)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

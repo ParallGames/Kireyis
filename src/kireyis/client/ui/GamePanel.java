@@ -1,6 +1,6 @@
 package kireyis.client.ui;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -81,19 +81,19 @@ public class GamePanel extends Group {
 	public void update() {
 		final double playerSize = EntityModels.PLAYER.getSize();
 
-		final double camX = Player.getX() + playerSize / 2d;
-		final double camY = Player.getY() + playerSize / 2d;
+		final double camX = Player.getX() + playerSize / 2;
+		final double camY = Player.getY() + playerSize / 2;
 
 		final double playerX = Player.getX();
 		final double playerY = Player.getY();
 
-		final ArrayList<RenderEntity> entities = World.getEntities();
+		final List<RenderEntity> entities = World.getEntities();
 
 		final int minX = ((int) camX) - Player.getViewDistance();
 		final int minY = ((int) camY) - Player.getViewDistance();
 
 		final int viewSize = Player.getViewDistance() * 2 + 1;
-		final double blockSize = Math.max(Window.getWidth(), Window.getHeight()) / (Player.getViewDistance() * 2d);
+		final double blockSize = Math.max(Window.getWidth(), Window.getHeight()) / (Player.getViewDistance() * 2);
 
 		final double translateX = -blockSize * (camX - (int) camX)
 				- ((viewSize - 1) * blockSize - Window.getWidth()) / 2;

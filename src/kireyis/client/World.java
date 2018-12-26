@@ -1,14 +1,15 @@
 package kireyis.client;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import kireyis.common.BlockID;
 import kireyis.common.Consts;
 
 public class World {
-	private static final ArrayList<RenderEntity> entities = new ArrayList<RenderEntity>();
+	private static final ArrayList<RenderEntity> entities = new ArrayList<>();
 
-	private static final byte world[][] = new byte[Consts.WORLD_SIZE][Consts.WORLD_SIZE];
+	private static final byte[][] world = new byte[Consts.WORLD_SIZE][Consts.WORLD_SIZE];
 
 	public static byte get(final int x, final int y) {
 		if (x < 0 || x >= Consts.WORLD_SIZE || y < 0 || y >= Consts.WORLD_SIZE) {
@@ -22,11 +23,11 @@ public class World {
 		world[x][y] = id;
 	}
 
-	public static synchronized ArrayList<RenderEntity> getEntities() {
-		return new ArrayList<RenderEntity>(entities);
+	public static synchronized List<RenderEntity> getEntities() {
+		return new ArrayList<>(entities);
 	}
 
-	public static synchronized void setEntities(final ArrayList<RenderEntity> newEntities) {
+	public static synchronized void setEntities(final List<RenderEntity> newEntities) {
 		entities.clear();
 		entities.addAll(newEntities);
 	}

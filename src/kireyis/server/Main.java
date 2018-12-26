@@ -3,7 +3,7 @@ package kireyis.server;
 import java.util.Scanner;
 
 public class Main {
-	public static void main(final String args[]) {
+	public static void main(final String[] args) {
 		Server.start();
 
 		final Scanner sc = new Scanner(System.in);

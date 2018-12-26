@@ -77,7 +77,7 @@ public class Client {
 								}
 							}
 						} else if (dataID == DataID.ENTITIES) {
-							final ArrayList<RenderEntity> entities = new ArrayList<RenderEntity>();
+							final ArrayList<RenderEntity> entities = new ArrayList<>();
 
 							final int num = in.readInt();
 
