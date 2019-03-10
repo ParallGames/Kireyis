@@ -16,9 +16,12 @@ public class Client {
 	private static DataInputStream in;
 	private static DataOutputStream out;
 
-	private static String pseudo;
+	private static String nickname;
 
 	public static void close() {
+
+		GameLoop.stop();
+
 		try {
 			socket.close();
 		} catch (final NullPointerException e) {
@@ -26,18 +29,17 @@ public class Client {
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
-		GameLoop.stop();
 	}
 
-	public static boolean connect(final String ip, final String pseudo) {
-		Client.pseudo = pseudo;
+	public static boolean connect(final String ip, final String nickname) {
+		Client.nickname = nickname;
 		try {
 			socket = new Socket(ip, Consts.PORT);
 
 			in = new DataInputStream(socket.getInputStream());
 			out = new DataOutputStream(socket.getOutputStream());
 
-			out.writeUTF(pseudo);
+			out.writeUTF(nickname);
 
 			if (!in.readBoolean()) {
 				return false;
@@ -108,8 +110,8 @@ public class Client {
 		return true;
 	}
 
-	public static String getPseudo() {
-		return pseudo;
+	public static String getNickname() {
+		return nickname;
 	}
 
 	private static byte currentHorizontalAccel = 0;

@@ -23,13 +23,13 @@ public class Player extends Entity {
 	}
 
 	@Override
-	public int getTypeID() {
+	public int getID() {
 		return EntityModels.PLAYER.getID();
 	}
 
 	@Override
 	public double getSize() {
-		return 0.5;
+		return EntityModels.PLAYER.getSize();
 	}
 
 	@Override

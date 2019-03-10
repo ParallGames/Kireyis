@@ -17,17 +17,17 @@ public class ConnectionPanel extends Group {
 		ipT.setTranslateX(10);
 		ipT.setTranslateY(46);
 
-		final Text pseudoT = new Text("Pseudo : ");
-		pseudoT.setTranslateX(10);
-		pseudoT.setTranslateY(78);
+		final Text nicknameT = new Text("Nickname : ");
+		nicknameT.setTranslateX(10);
+		nicknameT.setTranslateY(78);
 
 		final TextField ipTF = new TextField();
 		ipTF.setTranslateX(70);
 		ipTF.setTranslateY(32);
 
-		final TextField pseudoTF = new TextField();
-		pseudoTF.setTranslateX(70);
-		pseudoTF.setTranslateY(64);
+		final TextField nicknameTF = new TextField();
+		nicknameTF.setTranslateX(70);
+		nicknameTF.setTranslateY(64);
 
 		final Button bt = new Button("Connexion");
 		bt.setTranslateX(70);
@@ -36,7 +36,7 @@ public class ConnectionPanel extends Group {
 		bt.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(final ActionEvent e) {
-				if (Client.connect(ipTF.getText(), pseudoTF.getText())) {
+				if (Client.connect(ipTF.getText(), nicknameTF.getText())) {
 					GameLoop.start();
 				} else {
 					// TODO
@@ -45,6 +45,6 @@ public class ConnectionPanel extends Group {
 			}
 		});
 
-		this.getChildren().addAll(ipT, pseudoT, ipTF, pseudoTF, bt);
+		this.getChildren().addAll(ipT, nicknameT, ipTF, nicknameTF, bt);
 	}
 }

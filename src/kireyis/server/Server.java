@@ -4,20 +4,23 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import kireyis.common.Consts;
 
 public class Server {
 	private static final int TPS = 100;
 	private static final long INTERVAL = 1_000_000_000L / TPS;
-	private static long time = System.nanoTime();
 
 	private static final ArrayList<Client> clients = new ArrayList<>();
 
 	private static ServerSocket socket = null;
 
 	private static Thread connectionThread;
-	private static Thread gameLoopThread;
+
+	private static final ScheduledExecutorService gameLoop = Executors.newSingleThreadScheduledExecutor();
 
 	public static void start() {
 		try {
@@ -35,9 +38,9 @@ public class Server {
 						final Client client = new Client(socket.accept());
 
 						if (client.isConnected()) {
-							System.out.println(client.getPseudo() + " connected");
+							System.out.println(client.getNickname() + " connected");
 							for (final Client receiver : clients) {
-								receiver.sendConnection(client.getPseudo());
+								receiver.sendConnection(client.getNickname());
 							}
 
 							clients.add(client);
@@ -56,42 +59,28 @@ public class Server {
 		};
 		connectionThread.start();
 
-		// Game loop thread
-		gameLoopThread = new Thread() {
+		gameLoop.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
-				while (!socket.isClosed()) {
-					for (int n = clients.size() - 1; n >= 0; n--) {
-						final Client client = clients.get(n);
-						if (client.isConnected()) {
-							client.sendEntities(World.getVisibleEntities(client));
-							client.sendPos();
-						} else {
-							client.close();
-							clients.remove(client);
+				for (int n = clients.size() - 1; n >= 0; n--) {
+					final Client client = clients.get(n);
+					if (client.isConnected()) {
+						client.sendEntities(World.getVisibleEntities(client));
+						client.sendPos();
+					} else {
+						client.close();
+						clients.remove(client);
 
-							for (final Client receiver : clients) {
-								receiver.sendDisconnection(client.getPseudo());
-							}
-							System.out.println(client.getPseudo() + " disconnected");
+						for (final Client receiver : clients) {
+							receiver.sendDisconnection(client.getNickname());
 						}
+						System.out.println(client.getNickname() + " disconnected");
 					}
-
-					World.tickEntities();
-
-					final long sleep = time - System.nanoTime() + INTERVAL;
-					if (sleep > 0) {
-						try {
-							Thread.sleep(sleep / 1_000_000L, (int) (sleep % 1_000_000L));
-						} catch (final InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-					time = System.nanoTime();
 				}
+
+				World.tickEntities();
 			}
-		};
-		gameLoopThread.start();
+		}, 0, INTERVAL, TimeUnit.NANOSECONDS);
 
 		System.out.println("Server ready");
 	}
@@ -103,9 +92,10 @@ public class Server {
 			e.printStackTrace();
 		}
 
+		gameLoop.shutdown();
+
 		try {
 			connectionThread.join();
-			gameLoopThread.join();
 		} catch (final InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -119,9 +109,9 @@ public class Server {
 		System.out.println("Server closed");
 	}
 
-	public static boolean isPseudoUsed(final String pseudo) {
+	public static boolean isNicknameUsed(final String pseudo) {
 		for (final Client client : Server.clients) {
-			if (client.getPseudo().equalsIgnoreCase(pseudo)) {
+			if (client.getNickname().equalsIgnoreCase(pseudo)) {
 				return true;
 			}
 		}

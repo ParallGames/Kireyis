@@ -18,11 +18,11 @@ public class Arrow extends Entity {
 
 	@Override
 	public double getSize() {
-		return 0.25;
+		return EntityModels.ARROW.getSize();
 	}
 
 	@Override
-	public int getTypeID() {
+	public int getID() {
 		return EntityModels.ARROW.getID();
 	}
 

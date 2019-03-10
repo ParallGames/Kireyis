@@ -92,13 +92,11 @@ public class GamePanel extends Group {
 		final int minX = ((int) camX) - Player.getViewDistance();
 		final int minY = ((int) camY) - Player.getViewDistance();
 
-		final int viewSize = Player.getViewDistance() * 2 + 1;
+		final int viewSize = Player.getViewDistance() * 2;
 		final double blockSize = Math.max(Window.getWidth(), Window.getHeight()) / (Player.getViewDistance() * 2);
 
-		final double translateX = -blockSize * (camX - (int) camX)
-				- ((viewSize - 1) * blockSize - Window.getWidth()) / 2;
-		final double translateY = -blockSize * (camY - (int) camY)
-				- ((viewSize - 1) * blockSize - Window.getHeight()) / 2;
+		final double translateX = -blockSize * (camX - (int) camX) - (viewSize * blockSize - Window.getWidth()) / 2;
+		final double translateY = -blockSize * (camY - (int) camY) - (viewSize * blockSize - Window.getHeight()) / 2;
 
 		Platform.runLater(new Runnable() {
 			@Override
@@ -106,8 +104,8 @@ public class GamePanel extends Group {
 				canvas.setHeight(Window.getHeight());
 				canvas.setWidth(Window.getWidth());
 
-				for (int x = 0; x < viewSize; x++) {
-					for (int y = 0; y < viewSize; y++) {
+				for (int x = 0; x <= viewSize; x++) {
+					for (int y = 0; y <= viewSize; y++) {
 						final byte block = World.get(x + minX, y + minY);
 
 						if (block == BlockID.UNKNOWN) {

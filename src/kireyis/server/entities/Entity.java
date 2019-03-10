@@ -65,7 +65,7 @@ public abstract class Entity {
 
 	public abstract double getSize();
 
-	public abstract int getTypeID();
+	public abstract int getID();
 
 	public abstract double getFriction();
 
@@ -82,7 +82,7 @@ public abstract class Entity {
 	}
 
 	public static void collide(final Entity e1, final Entity e2) {
-		if (e1.getTypeID() == EntityModels.ARROW.getID() || e2.getTypeID() == EntityModels.ARROW.getID()) {
+		if (e1.getID() == EntityModels.ARROW.getID() || e2.getID() == EntityModels.ARROW.getID()) {
 			return;
 		}
 

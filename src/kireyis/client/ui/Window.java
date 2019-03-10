@@ -32,9 +32,7 @@ public class Window extends Application {
 		gamePanel.setVisible(false);
 		popupPanel.setVisible(false);
 
-		root.getChildren().addAll(connectionPanel, gamePanel, popupPanel);
-
-		root.getChildren().add(key);
+		root.getChildren().addAll(connectionPanel, gamePanel, popupPanel, key);
 
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(true);

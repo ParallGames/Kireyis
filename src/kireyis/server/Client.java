@@ -21,7 +21,7 @@ public final class Client {
 	private DataInputStream in;
 	private DataOutputStream out;
 
-	private String pseudo;
+	private String nickname;
 
 	private boolean connected = false;
 
@@ -41,9 +41,9 @@ public final class Client {
 			in = new DataInputStream(socket.getInputStream());
 			out = new DataOutputStream(socket.getOutputStream());
 
-			pseudo = in.readUTF();
+			nickname = in.readUTF();
 
-			if (pseudo.isEmpty() || Server.isPseudoUsed(pseudo)) {
+			if (nickname.isEmpty() || Server.isNicknameUsed(nickname)) {
 				out.writeBoolean(false);
 				return;
 			} else {
@@ -79,13 +79,13 @@ public final class Client {
 							World.addEntity(new Arrow(player.getX() + arrowSize, player.getY() + arrowSize,
 									in.readDouble(), player.getSpeedX(), player.getSpeedY()));
 						} else {
-							System.err.println("Wrong datatype received from " + pseudo + ".");
+							System.err.println("Wrong datatype received from " + nickname + ".");
 							connected = false;
 							return;
 						}
 					} catch (final IOException e) {
 						if (connected) {
-							System.err.println("Connection error with " + pseudo + ".");
+							System.err.println("Connection error with " + nickname + ".");
 							connected = false;
 						}
 						return;
@@ -122,24 +122,17 @@ public final class Client {
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
-		try {
-			sendingThread.interrupt();
-		} catch (final NullPointerException e) {
-			// Ignore
-		}
+
+		sendingThread.interrupt();
 
 		try {
 			receivingThread.join();
-		} catch (final NullPointerException e) {
-			// Ignore
 		} catch (final InterruptedException e) {
 			e.printStackTrace();
 		}
 
 		try {
 			sendingThread.join();
-		} catch (final NullPointerException e) {
-			// Ignore
 		} catch (final InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -147,15 +140,15 @@ public final class Client {
 
 	private void queue(final Runnable runnable) {
 		if (sendRequests.size() > Consts.MAX_QUEUE) {
-			System.err.println(pseudo + "'s connection timed out.");
+			System.err.println(nickname + "'s connection timed out.");
 			connected = false;
 		} else {
 			sendRequests.add(runnable);
 		}
 	}
 
-	public String getPseudo() {
-		return pseudo;
+	public String getNickname() {
+		return nickname;
 	}
 
 	public Player getPlayer() {
@@ -239,7 +232,7 @@ public final class Client {
 					out.writeInt(entities.size());
 
 					for (final Entity entity : entities) {
-						out.writeByte(entity.getTypeID());
+						out.writeByte(entity.getID());
 						out.writeDouble(entity.getX());
 						out.writeDouble(entity.getY());
 						out.writeDouble(entity.getRotation());
