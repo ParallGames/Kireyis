@@ -1,7 +1,6 @@
 package kireyis.server.entities;
 
 import kireyis.common.Consts;
-import kireyis.common.entityModels.EntityModels;
 
 public abstract class Entity {
 	protected double x = 0;
@@ -34,7 +33,7 @@ public abstract class Entity {
 		}
 	}
 
-	protected synchronized void accelerate(final double accelX, final double accelY) {
+	public synchronized void accelerate(final double accelX, final double accelY) {
 		this.speedX += accelX;
 		this.speedY += accelY;
 	}
@@ -65,15 +64,13 @@ public abstract class Entity {
 
 	public abstract double getSize();
 
-	public abstract int getID();
+	public abstract byte getID();
 
 	public abstract double getFriction();
 
-	public void tick() {
+	public abstract void tick();
 
-	}
-
-	public void setAlive(final boolean alive) {
+	public void setAlive(boolean alive) {
 		this.alive = alive;
 	}
 
@@ -81,13 +78,19 @@ public abstract class Entity {
 		return !alive;
 	}
 
-	public static void collide(final Entity e1, final Entity e2) {
-		if (e1.getID() == EntityModels.ARROW.getID() || e2.getID() == EntityModels.ARROW.getID()) {
-			return;
-		}
+	public void collideWith(Entity e) {
+		// Do nothing by default
+	}
 
-		final double distX = e1.x - e2.x;
-		final double distY = e1.y - e2.y;
+	public static void collide(final Entity e1, final Entity e2) {
+		final double e1x = e1.x + e1.getSize() / 2;
+		final double e1y = e1.y + e1.getSize() / 2;
+
+		final double e2x = e2.x + e2.getSize() / 2;
+		final double e2y = e2.y + e2.getSize() / 2;
+
+		final double distX = e1x - e2x;
+		final double distY = e1y - e2y;
 
 		final double avgSize = (e1.getSize() + e2.getSize()) / 2;
 
@@ -103,5 +106,8 @@ public abstract class Entity {
 
 		angle += Math.PI;
 		e2.accelerate(Math.sin(angle) * moveSize, Math.cos(angle) * moveSize);
+
+		e1.collideWith(e2);
+		e2.collideWith(e1);
 	}
 }

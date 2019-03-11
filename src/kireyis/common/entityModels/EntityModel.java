@@ -1,7 +1,7 @@
 package kireyis.common.entityModels;
 
 public abstract class EntityModel {
-	public abstract int getID();
+	public abstract byte getID();
 
 	public abstract double getSize();
 }

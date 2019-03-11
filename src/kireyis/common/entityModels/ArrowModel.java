@@ -2,7 +2,7 @@ package kireyis.common.entityModels;
 
 public class ArrowModel extends EntityModel {
 	@Override
-	public int getID() {
+	public byte getID() {
 		return 1;
 	}
 

@@ -15,6 +15,8 @@ import kireyis.server.entities.Entity;
 import kireyis.server.entities.Player;
 
 public final class Client {
+	private static final int MAX_QUEUE = 100;
+
 	private int viewDistance = Consts.DEFAULT_VIEW;
 
 	private final Socket socket;
@@ -139,7 +141,7 @@ public final class Client {
 	}
 
 	private void queue(final Runnable runnable) {
-		if (sendRequests.size() > Consts.MAX_QUEUE) {
+		if (sendRequests.size() > MAX_QUEUE) {
 			System.err.println(nickname + "'s connection timed out.");
 			connected = false;
 		} else {

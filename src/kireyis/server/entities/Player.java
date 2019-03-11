@@ -23,7 +23,7 @@ public class Player extends Entity {
 	}
 
 	@Override
-	public int getID() {
+	public byte getID() {
 		return EntityModels.PLAYER.getID();
 	}
 
