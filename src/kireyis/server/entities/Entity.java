@@ -70,15 +70,19 @@ public abstract class Entity {
 
 	public abstract void tick();
 
-	public void setAlive(boolean alive) {
+	public void setAlive(final boolean alive) {
 		this.alive = alive;
+	}
+
+	public boolean isAlive() {
+		return alive;
 	}
 
 	public boolean isDead() {
 		return !alive;
 	}
 
-	public void collideWith(Entity e) {
+	public void collideWith(final Entity e) {
 		// Do nothing by default
 	}
 

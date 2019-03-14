@@ -2,7 +2,7 @@ package kireyis.server.entities;
 
 import kireyis.common.entityModels.EntityModels;
 
-public class Player extends Entity {
+public class Player extends LivingEntity {
 	private static final double ACCELERATION = 0.002;
 
 	private byte horizontalAccel = 0;
@@ -58,5 +58,10 @@ public class Player extends Entity {
 		}
 
 		this.accelerate(accelX, accelY);
+	}
+
+	@Override
+	public int getMaxHP() {
+		return 10;
 	}
 }

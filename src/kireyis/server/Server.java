@@ -64,7 +64,7 @@ public class Server {
 			public void run() {
 				for (int n = clients.size() - 1; n >= 0; n--) {
 					final Client client = clients.get(n);
-					if (client.isConnected()) {
+					if (client.isConnected() && client.getPlayer().isAlive()) {
 						client.sendEntities(World.getVisibleEntities(client));
 						client.sendPos();
 					} else {

@@ -125,18 +125,24 @@ public final class Client {
 			e.printStackTrace();
 		}
 
-		sendingThread.interrupt();
-
-		try {
-			receivingThread.join();
-		} catch (final InterruptedException e) {
-			e.printStackTrace();
+		if (sendingThread != null) {
+			sendingThread.interrupt();
 		}
 
-		try {
-			sendingThread.join();
-		} catch (final InterruptedException e) {
-			e.printStackTrace();
+		if (receivingThread != null) {
+			try {
+				receivingThread.join();
+			} catch (final InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		if (sendingThread != null) {
+			try {
+				sendingThread.join();
+			} catch (final InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

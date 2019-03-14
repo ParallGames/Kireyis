@@ -62,10 +62,8 @@ public class World {
 		}
 
 		for (int n = entities.size() - 1; n >= 0; n--) {
-			final Entity e = entities.get(n);
-
-			if (e.isDead()) {
-				World.entities.remove(e);
+			if (entities.get(n).isDead()) {
+				World.entities.remove(n);
 			}
 		}
 	}
