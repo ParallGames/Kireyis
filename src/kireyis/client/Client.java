@@ -1,5 +1,7 @@
 package kireyis.client;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -36,10 +38,11 @@ public class Client {
 		try {
 			socket = new Socket(ip, Consts.PORT);
 
-			in = new DataInputStream(socket.getInputStream());
-			out = new DataOutputStream(socket.getOutputStream());
+			in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+			out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 
 			out.writeUTF(nickname);
+			out.flush();
 
 			if (!in.readBoolean()) {
 				return false;
@@ -176,15 +179,24 @@ public class Client {
 	public static synchronized void sendClose() {
 		try {
 			out.writeByte(DataID.CLOSE);
-		} catch (final NullPointerException e) {
+			out.flush();
+		} catch (final NullPointerException | IOException e) {
 			// Ignore
-		} catch (final IOException e) {
-			close();
 		}
 	}
 
 	public static synchronized void disconnect() {
 		sendClose();
 		close();
+	}
+
+	public static synchronized void flush() {
+		try {
+			out.flush();
+		} catch (final NullPointerException e) {
+			// Ignore
+		} catch (final IOException e) {
+			close();
+		}
 	}
 }

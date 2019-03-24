@@ -67,6 +67,7 @@ public class Server {
 					if (client.isConnected() && client.getPlayer().isAlive()) {
 						client.sendEntities(World.getVisibleEntities(client));
 						client.sendPos();
+						client.flush();
 					} else {
 						client.close();
 						clients.remove(client);

@@ -1,5 +1,7 @@
 package kireyis.server;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -40,13 +42,14 @@ public final class Client {
 		this.socket = socket;
 
 		try {
-			in = new DataInputStream(socket.getInputStream());
-			out = new DataOutputStream(socket.getOutputStream());
+			in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+			out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 
 			nickname = in.readUTF();
 
 			if (nickname.isEmpty() || Server.isNicknameUsed(nickname)) {
 				out.writeBoolean(false);
+				out.flush();
 				return;
 			} else {
 				out.writeBoolean(true);
@@ -54,6 +57,7 @@ public final class Client {
 
 			sendWorld();
 			sendViewDistance();
+			out.flush();
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
@@ -279,6 +283,19 @@ public final class Client {
 				try {
 					out.writeByte(DataID.VIEW_DISTANCE);
 					out.writeInt(viewDistance);
+				} catch (final IOException e) {
+					connected = false;
+				}
+			}
+		});
+	}
+
+	public synchronized void flush() {
+		queue(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					out.flush();
 				} catch (final IOException e) {
 					connected = false;
 				}

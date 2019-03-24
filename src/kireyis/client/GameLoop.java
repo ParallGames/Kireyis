@@ -50,6 +50,8 @@ public class GameLoop {
 
 				Client.sendPlayerRotation();
 
+				Client.flush();
+
 				Window.update();
 			}
 		}, 0, INTERVAL, TimeUnit.NANOSECONDS);
