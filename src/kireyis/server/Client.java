@@ -185,7 +185,7 @@ public final class Client {
 
 					for (int y = 0; y < Consts.WORLD_SIZE; y++) {
 						for (int x = 0; x < Consts.WORLD_SIZE; x++) {
-							out.writeByte(World.get(x, y));
+							out.writeByte(World.getTile(x, y));
 						}
 					}
 				} catch (final IOException e) {

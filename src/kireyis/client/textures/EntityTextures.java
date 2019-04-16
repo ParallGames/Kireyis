@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 import kireyis.common.EntityID;
 
 public class EntityTextures {
-	private static final String TEXTURES_PATH = "/resources/textures/";
+	private static final String TEXTURES_PATH = "/resources/textures/entities/";
 
 	private static Image playerTexture;
 	private static Image arrowTexture;
@@ -16,7 +16,7 @@ public class EntityTextures {
 				true);
 	}
 
-	public static Image getTextureFromID(final int id) {
+	public static Image getTextureFromID(final byte id) {
 		switch (id) {
 		case EntityID.PLAYER:
 			return playerTexture;
@@ -28,9 +28,5 @@ public class EntityTextures {
 
 	public static Image getPlayerTexture() {
 		return playerTexture;
-	}
-
-	public static Image getArrowTexture() {
-		return arrowTexture;
 	}
 }

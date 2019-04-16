@@ -19,7 +19,7 @@ import kireyis.client.Player;
 import kireyis.client.RenderEntity;
 import kireyis.client.World;
 import kireyis.client.textures.EntityTextures;
-import kireyis.common.BlockID;
+import kireyis.client.textures.TileTextures;
 import kireyis.common.entityModels.EntityModels;
 
 public class GamePanel extends Group {
@@ -104,18 +104,12 @@ public class GamePanel extends Group {
 
 				for (int x = 0; x <= viewSize; x++) {
 					for (int y = 0; y <= viewSize; y++) {
-						final byte block = World.get(x + minX, y + minY);
+						final byte tile = World.get(x + minX, y + minY);
 
-						if (block == BlockID.UNKNOWN) {
-							gc.setFill(Color.PURPLE);
-						} else if (block == BlockID.VOID) {
-							gc.setFill(Color.BLACK);
-						} else if (block == BlockID.GRASS) {
-							gc.setFill(Color.GREEN);
-						} else {
-							throw new RuntimeException("Unknown block");
-						}
-						gc.fillRect(translateX + blockSize * x, translateY + blockSize * y, blockSize, blockSize);
+						final Image texture = TileTextures.getTextureFromID(tile);
+
+						gc.drawImage(texture, translateX + blockSize * x, translateY + blockSize * y, blockSize,
+								blockSize);
 					}
 				}
 
@@ -139,8 +133,7 @@ public class GamePanel extends Group {
 				gc.setFill(Color.DARKRED);
 				gc.fillRect(Window.getWidth() / 2 - 100, Window.getHeight() - 60, 200, 50);
 				gc.setFill(Color.RED);
-				gc.fillRect(Window.getWidth() / 2 - 100, Window.getHeight() - 60,
-						Player.getHealth() * 200 / Player.getMaxHealth(), 50);
+				gc.fillRect(Window.getWidth() / 2 - 100, Window.getHeight() - 60, Player.getHealth() * 20, 50);
 
 				gc.setFill(Color.BLACK);
 				gc.setFont(new Font("Noto Mono", 32));

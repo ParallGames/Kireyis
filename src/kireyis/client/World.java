@@ -3,8 +3,8 @@ package kireyis.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import kireyis.common.BlockID;
 import kireyis.common.Consts;
+import kireyis.common.TileID;
 
 public class World {
 	private static final ArrayList<RenderEntity> entities = new ArrayList<>();
@@ -13,7 +13,7 @@ public class World {
 
 	public static byte get(final int x, final int y) {
 		if (x < 0 || x >= Consts.WORLD_SIZE || y < 0 || y >= Consts.WORLD_SIZE) {
-			return BlockID.VOID;
+			return TileID.VOID;
 		}
 
 		return world[x][y];

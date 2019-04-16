@@ -45,7 +45,7 @@ public class DataID {
 
 	public static final byte WORLD = 9;
 	/*
-	 * for each block byte id
+	 * for each tile : byte id
 	 */
 
 	public static final byte VIEW_DISTANCE = 10;

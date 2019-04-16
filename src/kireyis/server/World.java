@@ -3,8 +3,8 @@ package kireyis.server;
 import java.util.ArrayList;
 import java.util.List;
 
-import kireyis.common.BlockID;
 import kireyis.common.Consts;
+import kireyis.common.TileID;
 import kireyis.server.entities.Entity;
 import kireyis.server.entities.Player;
 
@@ -16,12 +16,12 @@ public class World {
 	static {
 		for (int x = 0; x < world.length; x++) {
 			for (int y = 0; y < world[0].length; y++) {
-				world[x][y] = BlockID.GRASS;
+				world[x][y] = TileID.GRASS;
 			}
 		}
 	}
 
-	public static byte get(final int x, final int y) {
+	public static byte getTile(final int x, final int y) {
 		return world[x][y];
 	}
 
