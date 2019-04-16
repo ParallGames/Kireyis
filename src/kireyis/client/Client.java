@@ -98,6 +98,10 @@ public class Client {
 							Player.setPos(in.readDouble(), in.readDouble());
 						} else if (dataID == DataID.VIEW_DISTANCE) {
 							Player.setViewDistance(in.readInt());
+						} else if (dataID == DataID.PLAYER_MAX_HEALTH) {
+							Player.setMaxHealth(in.readInt());
+						} else if (dataID == DataID.PLAYER_HEALTH) {
+							Player.setHealth(in.readInt());
 						} else {
 							close();
 							throw new RuntimeException("Unknown data type");

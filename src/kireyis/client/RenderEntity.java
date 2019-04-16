@@ -5,12 +5,12 @@ public class RenderEntity {
 	public final double y;
 	public final double rotation;
 
-	public final byte typeid;
+	public final byte id;
 
-	public RenderEntity(final byte typeid, final double x, final double y, final double rotation) {
+	public RenderEntity(final byte id, final double x, final double y, final double rotation) {
 		this.x = x;
 		this.y = y;
 		this.rotation = rotation;
-		this.typeid = typeid;
+		this.id = id;
 	}
 }

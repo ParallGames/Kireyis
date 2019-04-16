@@ -57,6 +57,7 @@ public final class Client {
 
 			sendWorld();
 			sendViewDistance();
+			sendMaxHP();
 			out.flush();
 		} catch (final IOException e) {
 			e.printStackTrace();
@@ -283,6 +284,38 @@ public final class Client {
 				try {
 					out.writeByte(DataID.VIEW_DISTANCE);
 					out.writeInt(viewDistance);
+				} catch (final IOException e) {
+					connected = false;
+				}
+			}
+		});
+	}
+
+	public synchronized void sendMaxHP() {
+		final int maxHP = this.getPlayer().getMaxHP();
+
+		queue(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					out.writeByte(DataID.PLAYER_MAX_HEALTH);
+					out.writeInt(maxHP);
+				} catch (final IOException e) {
+					connected = false;
+				}
+			}
+		});
+	}
+
+	public synchronized void sendHP() {
+		final int hp = this.getPlayer().getHP();
+
+		queue(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					out.writeByte(DataID.PLAYER_HEALTH);
+					out.writeInt(hp);
 				} catch (final IOException e) {
 					connected = false;
 				}

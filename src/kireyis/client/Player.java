@@ -7,6 +7,9 @@ public class Player {
 	private static double y;
 	private static double rotation = 0;
 
+	private static int health;
+	private static int maxHealth;
+
 	private static int viewDistance = Consts.DEFAULT_VIEW;
 
 	public static double getX() {
@@ -51,5 +54,21 @@ public class Player {
 	public static void setPos(final double x, final double y) {
 		Player.x = x;
 		Player.y = y;
+	}
+
+	public static int getHealth() {
+		return health;
+	}
+
+	public static int getMaxHealth() {
+		return maxHealth;
+	}
+
+	public static void setHealth(final int health) {
+		Player.health = health;
+	}
+
+	public static void setMaxHealth(final int maxHealth) {
+		Player.maxHealth = maxHealth;
 	}
 }

@@ -62,4 +62,14 @@ public class DataID {
 	/*
 	 * double angle
 	 */
+
+	public static final byte PLAYER_MAX_HEALTH = 13;
+	/*
+	 * int maxHealth
+	 */
+
+	public static final byte PLAYER_HEALTH = 14;
+	/*
+	 * int health
+	 */
 }

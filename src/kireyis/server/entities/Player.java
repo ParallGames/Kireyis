@@ -1,5 +1,6 @@
 package kireyis.server.entities;
 
+import kireyis.common.EntityID;
 import kireyis.common.entityModels.EntityModels;
 
 public class Player extends LivingEntity {
@@ -24,7 +25,7 @@ public class Player extends LivingEntity {
 
 	@Override
 	public byte getID() {
-		return EntityModels.PLAYER.getID();
+		return EntityID.PLAYER;
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package kireyis.server.entities;
 
+import kireyis.common.EntityID;
 import kireyis.common.entityModels.EntityModels;
 
 public class Arrow extends Projectile {
@@ -19,7 +20,7 @@ public class Arrow extends Projectile {
 
 	@Override
 	public byte getID() {
-		return EntityModels.ARROW.getID();
+		return EntityID.ARROW;
 	}
 
 	@Override

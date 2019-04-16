@@ -11,12 +11,14 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
 import kireyis.client.Client;
 import kireyis.client.Player;
 import kireyis.client.RenderEntity;
 import kireyis.client.World;
-import kireyis.client.textures.Textures;
+import kireyis.client.textures.EntityTextures;
 import kireyis.common.BlockID;
 import kireyis.common.entityModels.EntityModels;
 
@@ -24,17 +26,13 @@ public class GamePanel extends Group {
 	private final GraphicsContext gc;
 	private final Canvas canvas;
 
-	private void rotate(final double angle, final double x, final double y) {
-		final Rotate r = new Rotate(angle, x, y);
-		gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
-	}
-
 	private void drawRotatedImage(final Image image, final double angle, final double x, final double y,
 			final double width, final double height) {
-		gc.save();
-		rotate(angle, x + width / 2, y + height / 2);
+
+		final Rotate r = new Rotate(angle, x + width / 2, y + height / 2);
+		gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
 		gc.drawImage(image, x, y, width, height);
-		gc.restore();
+		gc.setTransform(1, 0, 0, 1, 0, 0);
 	}
 
 	public GamePanel() {
@@ -115,7 +113,7 @@ public class GamePanel extends Group {
 						} else if (block == BlockID.GRASS) {
 							gc.setFill(Color.GREEN);
 						} else {
-							gc.setFill(Color.WHITE);
+							throw new RuntimeException("Unknown block");
 						}
 						gc.fillRect(translateX + blockSize * x, translateY + blockSize * y, blockSize, blockSize);
 					}
@@ -125,29 +123,30 @@ public class GamePanel extends Group {
 					final double x = (entity.x - camX) * blockSize + Window.getWidth() / 2;
 					final double y = (entity.y - camY) * blockSize + Window.getHeight() / 2;
 
-					double size;
+					final Image texture = EntityTextures.getTextureFromID(entity.id);
+					final double size = EntityModels.getModelFromID(entity.id).getSize();
 
-					Image entityTexture = null;
-
-					if (entity.typeid == EntityModels.PLAYER.getID()) {
-						entityTexture = Textures.getPlayerTexture();
-						size = EntityModels.PLAYER.getSize();
-					} else if (entity.typeid == EntityModels.ARROW.getID()) {
-						entityTexture = Textures.getArrowTexture();
-						size = EntityModels.ARROW.getSize();
-					} else {
-						throw new RuntimeException("Unknown entity");
-					}
-
-					drawRotatedImage(entityTexture, entity.rotation * 180 / Math.PI, x, y, size * blockSize,
+					drawRotatedImage(texture, entity.rotation * 180 / Math.PI, x, y, size * blockSize,
 							size * blockSize);
 				}
 
 				final double x = (playerX - camX) * blockSize + Window.getWidth() / 2;
 				final double y = (playerY - camY) * blockSize + Window.getHeight() / 2;
 
-				drawRotatedImage(Textures.getPlayerTexture(), Player.getRotation() * 180 / Math.PI, x, y,
+				drawRotatedImage(EntityTextures.getPlayerTexture(), Player.getRotation() * 180 / Math.PI, x, y,
 						playerSize * blockSize, playerSize * blockSize);
+
+				gc.setFill(Color.DARKRED);
+				gc.fillRect(Window.getWidth() / 2 - 100, Window.getHeight() - 60, 200, 50);
+				gc.setFill(Color.RED);
+				gc.fillRect(Window.getWidth() / 2 - 100, Window.getHeight() - 60,
+						Player.getHealth() * 200 / Player.getMaxHealth(), 50);
+
+				gc.setFill(Color.BLACK);
+				gc.setFont(new Font("Noto Mono", 32));
+				gc.setTextAlign(TextAlignment.CENTER);
+				gc.fillText(Player.getHealth() + "/" + Player.getMaxHealth(), Window.getWidth() / 2,
+						Window.getHeight() - 24);
 			}
 		});
 	}
