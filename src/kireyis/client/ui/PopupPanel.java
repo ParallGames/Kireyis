@@ -1,5 +1,6 @@
 package kireyis.client.ui;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -9,7 +10,7 @@ import javafx.scene.shape.Rectangle;
 import kireyis.client.Client;
 
 public class PopupPanel extends Group {
-	private final Rectangle background = new Rectangle(1280, 720);
+	private final Rectangle background = new Rectangle();
 
 	public PopupPanel() {
 		background.setFill(Color.rgb(0, 0, 0, 0.5));
@@ -27,7 +28,12 @@ public class PopupPanel extends Group {
 	}
 
 	public void update() {
-		background.setHeight(Window.getHeight());
-		background.setWidth(Window.getWidth());
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				background.setHeight(Window.getHeight());
+				background.setWidth(Window.getWidth());
+			}
+		});
 	}
 }

@@ -8,11 +8,14 @@ public class EntityTextures {
 
 	private static Image playerTexture;
 	private static Image arrowTexture;
+	private static Image zombieTexture;
 
 	public static void loadTextures() {
 		playerTexture = new Image(EntityTextures.class.getResourceAsStream(TEXTURES_PATH + "player.png"), 64, 64, true,
 				true);
 		arrowTexture = new Image(EntityTextures.class.getResourceAsStream(TEXTURES_PATH + "arrow.png"), 64, 64, true,
+				true);
+		zombieTexture = new Image(EntityTextures.class.getResourceAsStream(TEXTURES_PATH + "zombie.png"), 64, 64, true,
 				true);
 	}
 
@@ -22,6 +25,8 @@ public class EntityTextures {
 			return playerTexture;
 		case EntityID.ARROW:
 			return arrowTexture;
+		case EntityID.ZOMBIE:
+			return zombieTexture;
 		}
 		throw new RuntimeException("Unknown entity id");
 	}

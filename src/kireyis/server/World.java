@@ -7,6 +7,7 @@ import kireyis.common.Consts;
 import kireyis.common.TileID;
 import kireyis.server.entities.Entity;
 import kireyis.server.entities.Player;
+import kireyis.server.entities.Zombie;
 
 public class World {
 	private static final ArrayList<Entity> entities = new ArrayList<>();
@@ -40,6 +41,39 @@ public class World {
 		}
 
 		return visibles;
+	}
+
+	public static synchronized int enemiesCount() {
+		int count = 0;
+
+		for (final Entity e : entities) {
+			if (e instanceof Zombie) {
+				count++;
+			}
+		}
+
+		return count;
+	}
+
+	public static synchronized Player getNearestPlayer(final double x, final double y) {
+		double distance = Double.POSITIVE_INFINITY;
+		Player nearest = null;
+
+		for (final Entity entity : entities) {
+			if (entity instanceof Player) {
+				final double distX = x - entity.getX();
+				final double distY = y - entity.getY();
+
+				final double dist = distX * distX + distY * distY;
+
+				if (dist < distance) {
+					distance = dist;
+					nearest = (Player) entity;
+				}
+			}
+		}
+
+		return nearest;
 	}
 
 	public static synchronized void addEntity(final Entity e) {

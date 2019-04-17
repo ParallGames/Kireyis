@@ -124,22 +124,31 @@ public class GamePanel extends Group {
 							size * blockSize);
 				}
 
-				final double x = (playerX - camX) * blockSize + Window.getWidth() / 2;
-				final double y = (playerY - camY) * blockSize + Window.getHeight() / 2;
+				{
+					final double x = (playerX - camX) * blockSize + Window.getWidth() / 2;
+					final double y = (playerY - camY) * blockSize + Window.getHeight() / 2;
 
-				drawRotatedImage(EntityTextures.getPlayerTexture(), Player.getRotation() * 180 / Math.PI, x, y,
-						playerSize * blockSize, playerSize * blockSize);
+					drawRotatedImage(EntityTextures.getPlayerTexture(), Player.getRotation() * 180 / Math.PI, x, y,
+							playerSize * blockSize, playerSize * blockSize);
+				}
 
-				gc.setFill(Color.DARKRED);
-				gc.fillRect(Window.getWidth() / 2 - 100, Window.getHeight() - 60, 200, 50);
-				gc.setFill(Color.RED);
-				gc.fillRect(Window.getWidth() / 2 - 100, Window.getHeight() - 60, Player.getHealth() * 20, 50);
+				if (Player.getMaxHealth() > 0) {
+					final double x = Window.getWidth() / 2 - 100;
+					final double y = Window.getHeight() - 60;
 
-				gc.setFill(Color.BLACK);
-				gc.setFont(new Font("Noto Mono", 32));
-				gc.setTextAlign(TextAlignment.CENTER);
-				gc.fillText(Player.getHealth() + "/" + Player.getMaxHealth(), Window.getWidth() / 2,
-						Window.getHeight() - 24);
+					final double sizeFactor = 200D / Player.getMaxHealth();
+
+					gc.setFill(Color.DARKRED);
+					gc.fillRect(x, y, 200, 50);
+					gc.setFill(Color.RED);
+					gc.fillRect(x, y, Player.getHealth() * sizeFactor, 50);
+
+					gc.setFill(Color.BLACK);
+					gc.setFont(new Font("Noto Mono", 32));
+					gc.setTextAlign(TextAlignment.CENTER);
+					gc.fillText(Player.getHealth() + "/" + Player.getMaxHealth(), Window.getWidth() / 2,
+							Window.getHeight() - 24);
+				}
 			}
 		});
 	}

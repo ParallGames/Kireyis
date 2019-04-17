@@ -1,8 +1,6 @@
 package kireyis.client.ui;
 
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCombination;
@@ -38,17 +36,6 @@ public class Window extends Application {
 		primaryStage.setResizable(true);
 		primaryStage.setTitle("Kireyis");
 
-		final ChangeListener<Number> listener = new ChangeListener<Number>() {
-			@Override
-			public void changed(final ObservableValue<? extends Number> observable, final Number oldValue,
-					final Number newValue) {
-				popupPanel.update();
-			}
-		};
-
-		primaryStage.widthProperty().addListener(listener);
-		primaryStage.heightProperty().addListener(listener);
-
 		primaryStage.show();
 	}
 
@@ -77,6 +64,7 @@ public class Window extends Application {
 
 	public static void update() {
 		gamePanel.update();
+		popupPanel.update();
 	}
 
 	public static void keyFocus() {

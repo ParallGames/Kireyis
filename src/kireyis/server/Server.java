@@ -9,6 +9,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import kireyis.common.Consts;
+import kireyis.server.entities.Zombie;
 
 public class Server {
 	private static final int TPS = 100;
@@ -78,6 +79,10 @@ public class Server {
 						}
 						System.out.println(client.getNickname() + " disconnected");
 					}
+				}
+
+				if (World.enemiesCount() < 5) {
+					World.addEntity(new Zombie(5, 5));
 				}
 
 				World.tickEntities();
