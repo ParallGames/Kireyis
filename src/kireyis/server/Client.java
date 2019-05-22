@@ -36,6 +36,9 @@ public final class Client {
 
 	private Player player;
 
+	private boolean loading = false;
+	private double load = 0;
+
 	public Client(final Socket socket) {
 		player = new Player(5, 5);
 
@@ -81,10 +84,19 @@ public final class Client {
 							return;
 						} else if (dataID == DataID.PLAYER_ROTATION) {
 							player.setRotation(in.readDouble());
-						} else if (dataID == DataID.THROW_ARROW) {
-							final double arrowSize = EntityModels.ARROW.getSize() / 2;
-							World.addEntity(new Arrow(player.getX() + arrowSize, player.getY() + arrowSize,
-									in.readDouble(), player.getSpeedX(), player.getSpeedY()));
+						} else if (dataID == DataID.LOAD) {
+							loading = true;
+						} else if (dataID == DataID.THROW) {
+							final double angle = in.readDouble();
+
+							if (load > 0.5) {
+								final double arrowSize = EntityModels.ARROW.getSize() / 2;
+								World.addEntity(new Arrow(player.getX() + arrowSize, player.getY() + arrowSize, angle,
+										player.getSpeedX(), player.getSpeedY(), load));
+							}
+
+							loading = false;
+							load = 0;
 						} else {
 							System.err.println("Wrong datatype received from " + nickname + ".");
 							connected = false;
@@ -118,6 +130,16 @@ public final class Client {
 
 		receivingThread.start();
 		sendingThread.start();
+	}
+
+	public void tick() {
+		if (loading) {
+			load += 0.01;
+
+			if (load > 1) {
+				load = 1;
+			}
+		}
 	}
 
 	public void close() {
@@ -316,6 +338,20 @@ public final class Client {
 				try {
 					out.writeByte(DataID.PLAYER_HEALTH);
 					out.writeInt(hp);
+				} catch (final IOException e) {
+					connected = false;
+				}
+			}
+		});
+	}
+
+	public synchronized void sendLoad() {
+		queue(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					out.writeByte(DataID.LOAD_STATE);
+					out.writeDouble(load);
 				} catch (final IOException e) {
 					connected = false;
 				}

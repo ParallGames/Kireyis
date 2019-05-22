@@ -69,7 +69,9 @@ public class Server {
 						client.sendEntities(World.getVisibleEntities(client));
 						client.sendPos();
 						client.sendHP();
+						client.sendLoad();
 						client.flush();
+						client.tick();
 					} else {
 						client.close();
 						clients.remove(client);

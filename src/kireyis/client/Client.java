@@ -102,6 +102,8 @@ public class Client {
 							Player.setMaxHealth(in.readInt());
 						} else if (dataID == DataID.PLAYER_HEALTH) {
 							Player.setHealth(in.readInt());
+						} else if (dataID == DataID.LOAD_STATE) {
+							Player.setLoad(in.readDouble());
 						} else {
 							close();
 							throw new RuntimeException("Unknown data type");
@@ -171,9 +173,17 @@ public class Client {
 		}
 	}
 
-	public static synchronized void sendPlayerThrowArrow() {
+	public static synchronized void sendPlayerLoad() {
 		try {
-			out.writeByte(DataID.THROW_ARROW);
+			out.writeByte(DataID.LOAD);
+		} catch (final IOException e) {
+			close();
+		}
+	}
+
+	public static synchronized void sendPlayerThrow() {
+		try {
+			out.writeByte(DataID.THROW);
 			out.writeDouble(Player.getRotation());
 		} catch (final IOException e) {
 			close();

@@ -17,9 +17,6 @@ public class DataID {
 	 */
 
 	public static final byte CLOSE = 4;
-	/*
-	 * Nothing
-	 */
 
 	public static final byte HORIZONTAL_ACCEL = 5;
 	/*
@@ -58,17 +55,21 @@ public class DataID {
 	 * double angle
 	 */
 
-	public static final byte THROW_ARROW = 12;
+	public static final byte LOAD = 12;
+
+	public static final byte THROW = 13;
 	/*
 	 * double angle
 	 */
 
-	public static final byte PLAYER_MAX_HEALTH = 13;
+	public static final byte LOAD_STATE = 14;
+
+	public static final byte PLAYER_MAX_HEALTH = 15;
 	/*
 	 * int maxHealth
 	 */
 
-	public static final byte PLAYER_HEALTH = 14;
+	public static final byte PLAYER_HEALTH = 16;
 	/*
 	 * int health
 	 */

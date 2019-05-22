@@ -12,6 +12,8 @@ public class Player {
 
 	private static int viewDistance = Consts.DEFAULT_VIEW;
 
+	private static double load = 0;
+
 	public static double getX() {
 		return x;
 	}
@@ -70,5 +72,13 @@ public class Player {
 
 	public static void setMaxHealth(final int maxHealth) {
 		Player.maxHealth = maxHealth;
+	}
+
+	public static void setLoad(final double load) {
+		Player.load = load;
+	}
+
+	public static double getLoad() {
+		return load;
 	}
 }

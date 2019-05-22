@@ -8,6 +8,7 @@ import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
@@ -71,7 +72,18 @@ public class GamePanel extends Group {
 		canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(final MouseEvent e) {
-				Client.sendPlayerThrowArrow();
+				if (e.getButton() == MouseButton.PRIMARY) {
+					Client.sendPlayerLoad();
+				}
+			}
+		});
+
+		canvas.setOnMouseReleased(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(final MouseEvent e) {
+				if (e.getButton() == MouseButton.PRIMARY) {
+					Client.sendPlayerThrow();
+				}
 			}
 		});
 	}
@@ -148,6 +160,14 @@ public class GamePanel extends Group {
 					gc.setTextAlign(TextAlignment.CENTER);
 					gc.fillText(Player.getHealth() + "/" + Player.getMaxHealth(), Window.getWidth() / 2,
 							Window.getHeight() - 24);
+
+				}
+
+				if (Player.getLoad() > 0) {
+					gc.setFill(Color.DARKBLUE);
+					gc.fillRect(50, Window.getHeight() - 150, 50, 100);
+					gc.setFill(Color.rgb(63, 63, 255));
+					gc.fillRect(50, Window.getHeight() - Player.getLoad() * 100 - 50, 50, 100 * Player.getLoad());
 				}
 			}
 		});
